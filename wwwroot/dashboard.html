@@ -4,17 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gaming Zone - لوحة التحكم</title>
-    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="dashboard-page">
-    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <div class="logo-small">
-                <i class="fas fa-gamepad"></i>
-            </div>
+            <div class="logo-small"><i class="fas fa-gamepad"></i></div>
             <h2>GAMING <span class="neon-text">ZONE</span></h2>
         </div>
         
@@ -26,63 +23,46 @@
 
         <nav class="sidebar-nav">
             <a href="#" class="nav-item active" data-section="overview">
-                <i class="fas fa-th-large"></i>
-                <span>نظرة عامة</span>
+                <i class="fas fa-th-large"></i><span>نظرة عامة</span>
             </a>
             <a href="#" class="nav-item" data-section="sessions">
-                <i class="fas fa-desktop"></i>
-                <span>الجلسات النشطة</span>
+                <i class="fas fa-desktop"></i><span>الكمبيوتر (8)</span>
             </a>
             <a href="#" class="nav-item" data-section="consoles">
-                <i class="fas fa-gamepad"></i>
-                <span>الكونسولات</span>
+                <i class="fas fa-gamepad"></i><span>الكونسولات (4)</span>
             </a>
             <a href="#" class="nav-item" data-section="quicksale">
-                <i class="fas fa-shopping-bag"></i>
-                <span>بيع سريع</span>
+                <i class="fas fa-shopping-bag"></i><span>بيع سريع</span>
             </a>
             <a href="#" class="nav-item" data-section="products">
-                <i class="fas fa-boxes-stacked"></i>
-                <span>إدارة المنتجات</span>
+                <i class="fas fa-boxes-stacked"></i><span>إدارة السلع</span>
             </a>
             <a href="#" class="nav-item owner-only" data-section="reports">
-                <i class="fas fa-chart-bar"></i>
-                <span>التقارير</span>
+                <i class="fas fa-chart-bar"></i><span>التقارير المالية</span>
             </a>
             <a href="#" class="nav-item owner-only" data-section="inventory">
-                <i class="fas fa-warehouse"></i>
-                <span>المخزون</span>
+                <i class="fas fa-warehouse"></i><span>مراقبة المخزون</span>
             </a>
             <a href="#" class="nav-item owner-only" data-section="settings">
-                <i class="fas fa-cog"></i>
-                <span>الإعدادات</span>
+                <i class="fas fa-cog"></i><span>الإعدادات</span>
             </a>
         </nav>
 
         <div class="sidebar-footer">
             <button class="btn-logout" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>تسجيل الخروج</span>
+                <i class="fas fa-sign-out-alt"></i><span>تسجيل الخروج</span>
             </button>
         </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content">
-        <!-- Top Bar -->
         <header class="topbar">
-            <button class="menu-toggle" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
-            </button>
+            <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
             <div class="topbar-right">
-                <div class="live-clock" id="liveClock"></div>
-                <div class="shift-badge" id="shiftBadge">وردية الصباح</div>
+                <div class="live-clock" id="liveClock">00:00:00</div>
+                <div class="shift-badge" id="shiftBadge">وردية</div>
             </div>
             <div class="topbar-left">
-                <div class="notification-bell" onclick="toggleNotifications()">
-                    <i class="fas fa-bell"></i>
-                    <span class="notif-count" id="notifCount">0</span>
-                </div>
                 <div class="daily-total">
                     <span>إجمالي اليوم:</span>
                     <strong id="dailyTotal">0 دج</strong>
@@ -90,143 +70,81 @@
             </div>
         </header>
 
-        <!-- ============ OVERVIEW SECTION ============ -->
+        <!-- نظرة عامة -->
         <section class="content-section active" id="section-overview">
-            <h2 class="section-title">
-                <i class="fas fa-th-large"></i>
-                نظرة عامة
-            </h2>
-            
+            <h2 class="section-title"><i class="fas fa-th-large"></i> نظرة عامة</h2>
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon blue"><i class="fas fa-desktop"></i></div>
-                    <div class="stat-info">
-                        <h3 id="activePCs">0</h3>
-                        <p>أجهزة نشطة</p>
-                    </div>
+                    <div class="stat-info"><h3 id="activePCs">0</h3><p>أجهزة كمبيوتر نشطة</p></div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon purple"><i class="fas fa-gamepad"></i></div>
-                    <div class="stat-info">
-                        <h3 id="activeConsoles">0</h3>
-                        <p>كونسولات نشطة</p>
-                    </div>
+                    <div class="stat-info"><h3 id="activeConsoles">0</h3><p>كونسولات نشطة</p></div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon green"><i class="fas fa-money-bill-wave"></i></div>
-                    <div class="stat-info">
-                        <h3 id="totalRevenue">0 دج</h3>
-                        <p>إيراد الوردية</p>
-                    </div>
+                    <div class="stat-info"><h3 id="totalRevenue">0 دج</h3><p>إيراد الوردية</p></div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon orange"><i class="fas fa-receipt"></i></div>
-                    <div class="stat-info">
-                        <h3 id="totalOrders">0</h3>
-                        <p>عدد الطلبات</p>
-                    </div>
+                    <div class="stat-info"><h3 id="totalOrders">0</h3><p>عدد العمليات</p></div>
                 </div>
             </div>
 
-            <!-- Active Sessions Quick View -->
-            <div class="card mt-20">
-                <div class="card-header">
-                    <h3><i class="fas fa-bolt"></i> الجلسات النشطة الآن</h3>
-                </div>
-                <div class="active-devices-grid" id="activeDevicesOverview">
-                    <p class="empty-msg">لا توجد جلسات نشطة حالياً</p>
-                </div>
-            </div>
-
-            <!-- Low Stock Alerts -->
             <div class="card mt-20 owner-only">
-                <div class="card-header">
-                    <h3><i class="fas fa-exclamation-triangle warning-icon"></i> تنبيهات المخزون</h3>
-                </div>
-                <div id="lowStockAlerts" class="alerts-container">
-                    <p class="empty-msg">لا توجد تنبيهات</p>
-                </div>
+                <div class="card-header"><h3><i class="fas fa-exclamation-triangle" style="color:var(--neon-orange)"></i> تنبيهات السلع التي قاربت على النفاد</h3></div>
+                <div id="lowStockAlerts" style="padding:15px"></div>
             </div>
         </section>
 
-        <!-- ============ SESSIONS SECTION (PC) ============ -->
+        <!-- الكمبيوتر -->
         <section class="content-section" id="section-sessions">
-            <h2 class="section-title">
-                <i class="fas fa-desktop"></i>
-                جلسات الكمبيوتر
-            </h2>
-            
-            <div class="pc-grid" id="pcGrid">
-                <!-- Generated by JS -->
-            </div>
+            <h2 class="section-title"><i class="fas fa-desktop"></i> إدارة أجهزة الكمبيوتر (8 أجهزة)</h2>
+            <div class="pc-grid" id="pcGrid"></div>
         </section>
 
-        <!-- ============ CONSOLES SECTION ============ -->
+        <!-- الكونسول -->
         <section class="content-section" id="section-consoles">
-            <h2 class="section-title">
-                <i class="fas fa-gamepad"></i>
-                إدارة الكونسولات
-            </h2>
-            
-            <div class="consoles-grid" id="consolesGrid">
-                <!-- Generated by JS -->
-            </div>
+            <h2 class="section-title"><i class="fas fa-gamepad"></i> أجهزة الكونسول (3 Xbox + 1 PS5)</h2>
+            <div class="consoles-grid" id="consolesGrid"></div>
         </section>
 
-        <!-- ============ QUICK SALE SECTION ============ -->
+        <!-- بيع سريع -->
         <section class="content-section" id="section-quicksale">
-            <h2 class="section-title">
-                <i class="fas fa-shopping-bag"></i>
-                بيع سريع (بدون جهاز)
-            </h2>
-            
+            <h2 class="section-title"><i class="fas fa-shopping-bag"></i> بيع سريع (مشتريات بدون جهاز)</h2>
             <div class="quicksale-layout">
                 <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-plus-circle"></i> طلب جديد</h3>
-                    </div>
-                    <div class="product-categories-tabs" id="qsCategoryTabs">
-                        <!-- Generated -->
-                    </div>
-                    <div class="products-grid" id="qsProductsGrid">
-                        <!-- Generated -->
-                    </div>
+                    <div class="card-header"><h3><i class="fas fa-plus-circle"></i> اختيار السلع</h3></div>
+                    <div class="product-categories-tabs" id="qsCategoryTabs"></div>
+                    <div class="products-grid" id="qsProductsGrid"></div>
                 </div>
                 <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-receipt"></i> الفاتورة</h3>
-                    </div>
+                    <div class="card-header"><h3><i class="fas fa-receipt"></i> فاتورة الزبون</h3></div>
                     <div class="invoice-items" id="qsInvoiceItems">
-                        <p class="empty-msg">أضف منتجات للفاتورة</p>
+                        <p class="empty-msg">اختر سلعاً لإضافتها للفاتورة</p>
                     </div>
                     <div class="invoice-total">
-                        <span>الإجمالي:</span>
+                        <span>المجموع:</span>
                         <strong id="qsTotal">0 دج</strong>
                     </div>
                     <button class="btn-neon btn-full" onclick="completeQuickSale()">
-                        <i class="fas fa-check-circle"></i>
-                        إتمام البيع
+                        <i class="fas fa-check-circle"></i> إتمام البيع وقبض المبلغ
                     </button>
                 </div>
             </div>
         </section>
 
-        <!-- ============ PRODUCTS MANAGEMENT ============ -->
+        <!-- إدارة المنتجات -->
         <section class="content-section" id="section-products">
-            <h2 class="section-title">
-                <i class="fas fa-boxes-stacked"></i>
-                إدارة المنتجات
-            </h2>
-            
+            <h2 class="section-title"><i class="fas fa-boxes-stacked"></i> السلع والمشروبات</h2>
             <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-plus"></i> إضافة منتج جديد</h3>
-                </div>
+                <div class="card-header"><h3><i class="fas fa-plus"></i> إضافة منتج جديد للمحل</h3></div>
                 <form id="addProductForm" class="product-form">
                     <div class="form-row">
                         <div class="form-group">
                             <label>اسم المنتج</label>
-                            <input type="text" id="prodName" required placeholder="مثال: قهوة">
+                            <input type="text" id="prodName" required placeholder="مثال: قهوة بريس">
                         </div>
                         <div class="form-group">
                             <label>الفئة</label>
@@ -234,305 +152,146 @@
                                 <option value="coffee">☕ مشروبات ساخنة</option>
                                 <option value="drinks">🥤 مشروبات باردة</option>
                                 <option value="chips">🍿 شيبس ومقرمشات</option>
-                                <option value="cake">🍰 حلويات وقاطو</option>
-                                <option value="food">🍔 وجبات خفيفة</option>
+                                <option value="cake">🍰 قاطو وحلويات</option>
+                                <option value="food">🍔 وجبات سريعة</option>
                                 <option value="other">📦 أخرى</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="form-row">
                         <div class="form-group">
                             <label>سعر البيع (دج)</label>
                             <input type="number" id="prodPrice" required placeholder="100">
                         </div>
                         <div class="form-group">
-                            <label>سعر الشراء (دج)</label>
-                            <input type="number" id="prodCost" placeholder="50">
-                        </div>
-                        <div class="form-group">
-                            <label>الكمية</label>
+                            <label>الكمية المتوفرة</label>
                             <input type="number" id="prodStock" required placeholder="20">
                         </div>
                         <div class="form-group">
-                            <label>حد التنبيه</label>
-                            <input type="number" id="prodMinStock" placeholder="5" value="5">
+                            <label>حد التنبيه عند النقصان</label>
+                            <input type="number" id="prodMinStock" value="5">
                         </div>
                     </div>
-                    <button type="submit" class="btn-neon">
-                        <i class="fas fa-plus"></i> إضافة المنتج
-                    </button>
+                    <button type="submit" class="btn-neon"><i class="fas fa-plus"></i> حفظ السلعة</button>
                 </form>
             </div>
 
             <div class="card mt-20">
-                <div class="card-header">
-                    <h3><i class="fas fa-list"></i> قائمة المنتجات</h3>
-                    <input type="text" class="search-input" placeholder="🔍 بحث..." id="productSearch" oninput="filterProducts()">
-                </div>
-                <div class="table-responsive">
-                    <table class="data-table" id="productsTable">
-                        <thead>
-                            <tr>
-                                <th>المنتج</th>
-                                <th>الفئة</th>
-                                <th>سعر البيع</th>
-                                <th>سعر الشراء</th>
-                                <th>المخزون</th>
-                                <th>الحالة</th>
-                                <th>إجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="productsTableBody">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- ============ REPORTS SECTION (Owner Only) ============ -->
-        <section class="content-section" id="section-reports">
-            <h2 class="section-title">
-                <i class="fas fa-chart-bar"></i>
-                التقارير والإحصائيات
-            </h2>
-            
-            <div class="report-filters">
-                <div class="form-group">
-                    <label>من تاريخ</label>
-                    <input type="date" id="reportFrom">
-                </div>
-                <div class="form-group">
-                    <label>إلى تاريخ</label>
-                    <input type="date" id="reportTo">
-                </div>
-                <div class="form-group">
-                    <label>الوردية</label>
-                    <select id="reportShift">
-                        <option value="all">الكل</option>
-                        <option value="morning">الصباح</option>
-                        <option value="evening">المساء</option>
-                    </select>
-                </div>
-                <button class="btn-neon" onclick="generateReport()">
-                    <i class="fas fa-search"></i> عرض التقرير
-                </button>
-            </div>
-
-            <div class="stats-grid mt-20">
-                <div class="stat-card big">
-                    <div class="stat-icon green"><i class="fas fa-coins"></i></div>
-                    <div class="stat-info">
-                        <h3 id="reportTotalRevenue">0 دج</h3>
-                        <p>إجمالي الإيرادات</p>
-                    </div>
-                </div>
-                <div class="stat-card big">
-                    <div class="stat-icon blue"><i class="fas fa-desktop"></i></div>
-                    <div class="stat-info">
-                        <h3 id="reportPCRevenue">0 دج</h3>
-                        <p>إيرادات الكمبيوتر</p>
-                    </div>
-                </div>
-                <div class="stat-card big">
-                    <div class="stat-icon purple"><i class="fas fa-gamepad"></i></div>
-                    <div class="stat-info">
-                        <h3 id="reportConsoleRevenue">0 دج</h3>
-                        <p>إيرادات الكونسولات</p>
-                    </div>
-                </div>
-                <div class="stat-card big">
-                    <div class="stat-icon orange"><i class="fas fa-shopping-cart"></i></div>
-                    <div class="stat-info">
-                        <h3 id="reportProductRevenue">0 دج</h3>
-                        <p>إيرادات المنتجات</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Shift Comparison -->
-            <div class="card mt-20">
-                <div class="card-header">
-                    <h3><i class="fas fa-balance-scale"></i> مقارنة الورديات</h3>
-                </div>
-                <div class="shifts-comparison" id="shiftsComparison">
-                    <div class="shift-bar">
-                        <div class="shift-label">🌅 وردية الصباح</div>
-                        <div class="bar-container">
-                            <div class="bar morning-bar" id="morningBar" style="width:0%"></div>
-                        </div>
-                        <span id="morningTotal">0 دج</span>
-                    </div>
-                    <div class="shift-bar">
-                        <div class="shift-label">🌙 وردية المساء</div>
-                        <div class="bar-container">
-                            <div class="bar evening-bar" id="eveningBar" style="width:0%"></div>
-                        </div>
-                        <span id="eveningTotal">0 دج</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Top Products -->
-            <div class="card mt-20">
-                <div class="card-header">
-                    <h3><i class="fas fa-trophy"></i> أكثر المنتجات مبيعاً</h3>
-                </div>
-                <div id="topProducts" class="top-products-list">
-                </div>
-            </div>
-
-            <!-- Transaction Log -->
-            <div class="card mt-20">
-                <div class="card-header">
-                    <h3><i class="fas fa-history"></i> سجل المعاملات</h3>
-                </div>
+                <div class="card-header"><h3><i class="fas fa-list"></i> قائمة المخزون الحالية</h3></div>
                 <div class="table-responsive">
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>الوقت</th>
-                                <th>النوع</th>
-                                <th>التفاصيل</th>
-                                <th>المبلغ</th>
-                                <th>العامل</th>
+                                <th>المنتج</th><th>الفئة</th><th>السعر</th><th>الكمية</th><th>الحالة</th><th>حذف</th>
                             </tr>
                         </thead>
-                        <tbody id="transactionLog">
-                        </tbody>
+                        <tbody id="productsTableBody"></tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <!-- ============ INVENTORY SECTION (Owner Only) ============ -->
-        <section class="content-section" id="section-inventory">
-            <h2 class="section-title">
-                <i class="fas fa-warehouse"></i>
-                مراقبة المخزون
-            </h2>
-            
-            <div class="inventory-summary" id="inventorySummary">
-                <!-- Generated -->
+        <!-- التقارير -->
+        <section class="content-section" id="section-reports">
+            <h2 class="section-title"><i class="fas fa-chart-bar"></i> التقارير والمدخول</h2>
+            <div class="stats-grid">
+                <div class="stat-card big">
+                    <div class="stat-icon green"><i class="fas fa-coins"></i></div>
+                    <div class="stat-info"><h3 id="reportTotalRevenue">0 دج</h3><p>إجمالي المداخيل</p></div>
+                </div>
+                <div class="stat-card big">
+                    <div class="stat-icon blue"><i class="fas fa-desktop"></i></div>
+                    <div class="stat-info"><h3 id="reportPCRevenue">0 دج</h3><p>مداخيل أجهزة الـ PC</p></div>
+                </div>
+                <div class="stat-card big">
+                    <div class="stat-icon purple"><i class="fas fa-gamepad"></i></div>
+                    <div class="stat-info"><h3 id="reportConsoleRevenue">0 دج</h3><p>مداخيل الكونسول</p></div>
+                </div>
+                <div class="stat-card big">
+                    <div class="stat-icon orange"><i class="fas fa-shopping-cart"></i></div>
+                    <div class="stat-info"><h3 id="reportProductRevenue">0 دج</h3><p>مداخيل بيع السلع</p></div>
+                </div>
+            </div>
+
+            <div class="card mt-20">
+                <div class="card-header"><h3><i class="fas fa-history"></i> السجل الكامل لجميع العمليات</h3></div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>الوقت</th><th>النوع</th><th>التفاصيل</th><th>المبلغ</th><th>العامل المسؤول</th></tr>
+                        </thead>
+                        <tbody id="transactionLog"></tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
-        <!-- ============ SETTINGS SECTION (Owner Only) ============ -->
+        <!-- المخزون -->
+        <section class="content-section" id="section-inventory">
+            <h2 class="section-title"><i class="fas fa-warehouse"></i> تفاصيل المخزون</h2>
+            <div id="inventorySummary" class="stats-grid"></div>
+        </section>
+
+        <!-- الإعدادات -->
         <section class="content-section" id="section-settings">
-            <h2 class="section-title">
-                <i class="fas fa-cog"></i>
-                الإعدادات
-            </h2>
-            
+            <h2 class="section-title"><i class="fas fa-cog"></i> إعدادات الصالة</h2>
             <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-key"></i> تغيير كلمات المرور</h3>
-                </div>
-                <div class="settings-form">
-                    <div class="form-group">
-                        <label>كلمة مرور المالك</label>
-                        <input type="password" id="setOwnerPass" placeholder="كلمة مرور جديدة">
-                    </div>
-                    <div class="form-group">
-                        <label>كلمة مرور عامل الصباح</label>
-                        <input type="password" id="setMorningPass" placeholder="كلمة مرور جديدة">
-                    </div>
-                    <div class="form-group">
-                        <label>كلمة مرور عامل المساء</label>
-                        <input type="password" id="setEveningPass" placeholder="كلمة مرور جديدة">
-                    </div>
-                    <button class="btn-neon" onclick="updatePasswords()">
-                        <i class="fas fa-save"></i> حفظ كلمات المرور
-                    </button>
-                </div>
-            </div>
-
-            <div class="card mt-20">
-                <div class="card-header">
-                    <h3><i class="fas fa-money-bill"></i> أسعار الكونسولات</h3>
-                </div>
-                <div class="settings-form">
-                    <div class="form-group">
-                        <label>سعر نصف ساعة كونسول (دج)</label>
-                        <input type="number" id="consolePriceHalf" value="100">
-                    </div>
-                    <button class="btn-neon" onclick="updateConsolePrice()">
-                        <i class="fas fa-save"></i> حفظ
-                    </button>
-                </div>
-            </div>
-
-            <div class="card mt-20">
-                <div class="card-header">
-                    <h3><i class="fas fa-database"></i> البيانات</h3>
-                </div>
-                <div class="settings-actions">
-                    <button class="btn-neon" onclick="exportData()">
-                        <i class="fas fa-download"></i> تصدير البيانات
-                    </button>
-                    <button class="btn-danger" onclick="clearAllData()">
-                        <i class="fas fa-trash"></i> مسح كل البيانات
-                    </button>
+                <div class="card-header"><h3><i class="fas fa-database"></i> إدارة البيانات</h3></div>
+                <div style="padding:20px; display:flex; gap:10px;">
+                    <button class="btn-neon" onclick="exportData()"><i class="fas fa-download"></i> تصدير نسخة احتياطية (JSON)</button>
+                    <button class="btn-sm btn-clear" style="padding:10px" onclick="clearAllData()"><i class="fas fa-trash"></i> تصفير جميع البيانات</button>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Session Modal (for adding consumption to PC/Console) -->
+    <!-- Modal إضافة استهلاك -->
     <div class="modal-overlay" id="sessionModal">
         <div class="modal">
             <div class="modal-header">
-                <h3 id="modalTitle">إضافة استهلاك</h3>
+                <h3 id="modalTitle">إضافة استهلاك للجهاز</h3>
                 <button class="modal-close" onclick="closeModal('sessionModal')">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="modal-device-info" id="modalDeviceInfo"></div>
-                
                 <div class="product-categories-tabs" id="modalCategoryTabs"></div>
-                <div class="products-grid modal-products" id="modalProductsGrid"></div>
-                
-                <div class="modal-cart">
-                    <h4><i class="fas fa-shopping-cart"></i> المشتريات</h4>
-                    <div class="cart-items" id="modalCartItems">
-                        <p class="empty-msg">لم يتم إضافة منتجات</p>
-                    </div>
+                <div class="products-grid" id="modalProductsGrid"></div>
+                <div class="card mt-20" style="padding:10px">
+                    <h4 style="font-size:13px; margin-bottom:5px;"><i class="fas fa-shopping-cart"></i> السلع المختارة:</h4>
+                    <div class="cart-items" id="modalCartItems"></div>
                     <div class="cart-total">
-                        <span>إجمالي المشتريات:</span>
+                        <span>المجموع:</span>
                         <strong id="modalCartTotal">0 دج</strong>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-neon" onclick="saveSessionConsumption()">
-                    <i class="fas fa-save"></i> حفظ
-                </button>
-                <button class="btn-secondary" onclick="closeModal('sessionModal')">إلغاء</button>
+                <button class="btn-neon" onclick="saveSessionConsumption()"><i class="fas fa-save"></i> حفظ الاستهلاك</button>
+                <button class="btn-sm btn-clear" onclick="closeModal('sessionModal')">إلغاء</button>
             </div>
         </div>
     </div>
 
-    <!-- Checkout Modal -->
+    <!-- Modal الحساب والدفع -->
     <div class="modal-overlay" id="checkoutModal">
         <div class="modal">
             <div class="modal-header">
-                <h3>💰 تسوية الحساب</h3>
+                <h3>💰 تسوية حساب وخروج الزبون</h3>
                 <button class="modal-close" onclick="closeModal('checkoutModal')">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="checkout-summary" id="checkoutSummary"></div>
+                <div id="checkoutSummary"></div>
             </div>
             <div class="modal-footer">
-                <button class="btn-neon" onclick="confirmCheckout()">
-                    <i class="fas fa-check"></i> تأكيد الدفع
-                </button>
-                <button class="btn-secondary" onclick="closeModal('checkoutModal')">إلغاء</button>
+                <button class="btn-neon" onclick="confirmCheckout()"><i class="fas fa-check"></i> تأكيد الدفع وإفراغ الجهاز</button>
+                <button class="btn-sm btn-clear" onclick="closeModal('checkoutModal')">إلغاء</button>
             </div>
         </div>
     </div>
 
-    <!-- Notification Container -->
-    <div class="notification-container" id="notificationContainer"></div>
-
-    <script src="app.js"></script>
-    <script>initDashboard();</script>
+    <script src="/js/app.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            initDashboard();
+        });
+    </script>
 </body>
 </html>
