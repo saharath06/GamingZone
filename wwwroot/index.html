@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gaming Zone - تسجيل الدخول</title>
-    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="login-page">
     <div class="particles" id="particles"></div>
@@ -42,21 +42,21 @@
             </button>
             
             <div class="login-hint">
-                <small>🔑 كلمات المرور الافتراضية: owner123 / morning123 / evening123</small>
+                <small>🔑 المالك: owner123 | الصباح: morning123 | المساء: evening123</small>
             </div>
         </form>
     </div>
 
-    <script src="app.js"></script>
+    <script src="/js/app.js"></script>
     <script>
-        // Particles animation
+        // تأثير الجزيئات المتطايرة
         const particlesContainer = document.getElementById('particles');
-        for(let i = 0; i < 50; i++) {
+        for(let i = 0; i < 40; i++) {
             const particle = document.createElement('div');
             particle.className = 'particle';
             particle.style.left = Math.random() * 100 + '%';
             particle.style.top = Math.random() * 100 + '%';
-            particle.style.animationDelay = Math.random() * 5 + 's';
+            particle.style.animationDelay = Math.random() * 4 + 's';
             particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
             particlesContainer.appendChild(particle);
         }
@@ -75,45 +75,11 @@
             if(passwords[role] && passwords[role] === password) {
                 localStorage.setItem('currentUser', role);
                 localStorage.setItem('loginTime', new Date().toISOString());
-                window.location.href = 'dashboard.html';
+                window.location.href = '/dashboard.html';
             } else {
-                showNotification('كلمة المرور غير صحيحة!', 'error');
+                alert('كلمة المرور غير صحيحة!');
             }
         });
     </script>
-    <!-- 🛠️ أداة تشخيص الأعطال تلقائياً (مؤقتة) -->
-<div id="diagnostic-box" style="background: #200; color: #ff5555; padding: 15px; border: 2px solid #ff3366; position: fixed; bottom: 10px; left: 10px; right: 10px; z-index: 99999; font-family: monospace; border-radius: 10px; direction: ltr; text-align: left; font-size: 12px; box-shadow: 0 0 20px rgba(255,0,0,0.5);">
-    <h3 style="margin: 0 0 10px 0; color: #fff;">📊 System Diagnostic Tool:</h3>
-    <ul id="diag-results" style="list-style: none; padding: 0; margin: 0;"></ul>
-</div>
-
-<script>
-    window.addEventListener('DOMContentLoaded', () => {
-        const results = document.getElementById('diag-results');
-        const log = (msg, success) => {
-            const li = document.createElement('li');
-            li.style.color = success ? '#00ff88' : '#ff3366';
-            li.style.margin = '5px 0';
-            li.innerHTML = (success ? '✔ ' : '✖ ') + msg;
-            results.appendChild(li);
-        };
-
-        // 1. فحص ربط الملف بالرأس
-        let hasLink = !!document.querySelector('link[href*="style.css"]');
-        log('HTML Stylesheet Link Tag: ' + (hasLink ? 'OK' : 'MISSING!'), hasLink);
-
-        // 2. فحص تحميل الملف من السيرفر وتحليل الـ Header
-        fetch('/css/style.css')
-            .then(res => {
-                log('Fetch /css/style.css Status: ' + res.status + ' (' + res.statusText + ')', res.ok);
-                const contentType = res.headers.get('content-type');
-                const isCorrectMIME = contentType && contentType.includes('text/css');
-                log('File MIME Type: ' + contentType + ' ' + (isCorrectMIME ? '(CORRECT)' : '(WRONG! Must be text/css)'), isCorrectMIME);
-            })
-            .catch(err => {
-                log('Fetch /css/style.css Failed: ' + err.message, false);
-            });
-    });
-</script>
 </body>
 </html>
