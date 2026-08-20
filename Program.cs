@@ -1,17 +1,20 @@
-using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.StaticFiles;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-// تفعيل الملفات الافتراضية مثل index.html
+// تفعيل الملفات الافتراضية (مثل index.html)
 app.UseDefaultFiles();
 
-// تفعيل الملفات الثابتة مع تحديد مسار wwwroot بشكل صريح
+// إعداد صريح ومضمون لـ MIME Types لضمان عدم رفض المتصفح لملفات التصميم والـ JS
+var provider = new FileExtensionContentTypeProvider();
+provider.Mappings[".css"] = "text/css";
+provider.Mappings[".js"] = "application/javascript";
+provider.Mappings[".html"] = "text/html";
+
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(builder.Environment.ContentRootPath, "wwwroot")),
-    RequestPath = ""
+    ContentTypeProvider = provider
 });
 
 app.Run();
