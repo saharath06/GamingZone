@@ -87,26 +87,21 @@
 <section class="content-section owner-only" id="section-products">
 <h2 class="section-title"><i class="fas fa-boxes-stacked"></i> إدارة السلع (المالك فقط)</h2>
 <div class="card">
-<div class="card-header"><h3><i class="fas fa-plus"></i> إضافة سلعة</h3></div>
+<div class="card-header"><h3><i class="fas fa-plus"></i> إضافة سلعة جديدة</h3></div>
 <form id="addProductForm" class="product-form">
 <div class="form-row">
-<div class="form-group"><label>الاسم</label><input type="text" id="prodName" required placeholder="قهوة"></div>
+<div class="form-group"><label>اسم السلعة</label><input type="text" id="prodName" required placeholder="مثال: قهوة"></div>
 <div class="form-group"><label>الفئة</label><select id="prodCategory" required><option value="coffee">☕ ساخنة</option><option value="drinks">🥤 باردة</option><option value="chips">🍿 مقرمشات</option><option value="cake">🍰 حلويات</option><option value="food">🍔 وجبات</option><option value="other">📦 أخرى</option></select></div>
-<div class="form-group"><label>السعر (دج)</label><input type="number" id="prodPrice" required placeholder="100"></div>
-<div class="form-group"><label>الكمية</label><input type="number" id="prodStock" required placeholder="20"></div>
+<div class="form-group"><label>سعر البيع (دج)</label><input type="number" id="prodPrice" required placeholder="100"></div>
+<div class="form-group"><label>الكمية بالمخزن</label><input type="number" id="prodStock" required placeholder="20"></div>
 <div class="form-group"><label>حد التنبيه</label><input type="number" id="prodMinStock" value="5"></div>
-</div>
-<div class="form-group" style="margin-bottom:12px">
-<label>🎨 اختر الأيقونة:</label>
-<div class="emoji-picker" id="emojiPickerAdd"></div>
-<input type="hidden" id="prodEmoji" value="☕">
 </div>
 <button type="submit" class="btn-neon"><i class="fas fa-plus"></i> حفظ السلعة</button>
 </form>
 </div>
 <div class="card mt-15">
 <div class="card-header"><h3><i class="fas fa-list"></i> المخزون</h3></div>
-<div class="table-responsive"><table class="data-table"><thead><tr><th>الأيقونة</th><th>المنتج</th><th>الفئة</th><th>السعر</th><th>الكمية</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="productsTableBody"></tbody></table></div>
+<div class="table-responsive"><table class="data-table"><thead><tr><th>اسم السلعة</th><th>الفئة</th><th>السعر</th><th>الكمية</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="productsTableBody"></tbody></table></div>
 </div>
 </section>
 
@@ -236,13 +231,8 @@
 </div>
 <div class="form-row">
 <div class="form-group"><label>السعر (دج)</label><input type="number" id="editPrice"></div>
-<div class="form-group"><label>الكمية</label><input type="number" id="editStock"></div>
+<div class="form-group"><label>الكمية بالمخزن</label><input type="number" id="editStock"></div>
 <div class="form-group"><label>حد التنبيه</label><input type="number" id="editMinStock"></div>
-</div>
-<div class="form-group">
-<label>🎨 اختر الأيقونة:</label>
-<div class="emoji-picker" id="emojiPickerEdit"></div>
-<input type="hidden" id="editEmoji">
 </div>
 <input type="hidden" id="editProdId">
 </div>
