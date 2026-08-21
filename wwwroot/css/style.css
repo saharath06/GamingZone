@@ -87,6 +87,7 @@ body.login-page{display:flex;justify-content:center;align-items:center;min-heigh
 .btn-add{background:rgba(0,212,255,0.1);color:var(--neon-blue);border:1px solid rgba(0,212,255,0.25)}
 .btn-checkout{background:rgba(0,255,136,0.1);color:var(--neon-green);border:1px solid rgba(0,255,136,0.25)}
 .btn-clear{background:rgba(255,51,102,0.1);color:var(--neon-red);border:1px solid rgba(255,51,102,0.25)}
+.btn-edit{background:rgba(255,221,0,0.1);color:var(--neon-yellow);border:1px solid rgba(255,221,0,0.25)}
 .console-timer{text-align:center;padding:14px}
 .timer-display{font-size:34px;font-weight:900;color:var(--neon-blue);font-variant-numeric:tabular-nums;text-shadow:0 0 12px var(--neon-blue-glow)}
 .timer-controls{display:flex;justify-content:center;gap:6px;margin-top:10px}
@@ -142,39 +143,43 @@ body.login-page{display:flex;justify-content:center;align-items:center;min-heigh
 .chart-container{position:relative;height:250px;padding:15px}
 body.role-morning .owner-only,body.role-evening .owner-only{display:none!important}
 
-/* ===== PRINT INVOICE ===== */
+/* ===== SHIFT ACCOUNTING INVOICE ===== */
 .print-invoice{display:none}
 @media print{
     body *{visibility:hidden!important;display:none!important}
     .print-invoice,.print-invoice *{visibility:visible!important;display:block!important}
-    .print-invoice{
-        position:absolute;top:0;left:0;right:0;width:100%;
-        background:#fff!important;color:#1a1a2e!important;
-        font-family:'Tajawal',sans-serif;padding:0;margin:0;
-    }
-    .inv-header{
-        text-align:center;padding:25px 20px 15px;
-        border-bottom:3px solid #00d4ff;
-        background:linear-gradient(135deg,#0a0a1a,#141428)!important;
-        -webkit-print-color-adjust:exact;print-color-adjust:exact;
-    }
-    .inv-header h1{color:#00d4ff!important;font-size:28px;letter-spacing:3px;margin-bottom:3px}
-    .inv-header p{color:#7b2ffa!important;font-size:13px}
-    .inv-body{padding:20px 25px}
-    .inv-info{display:flex;justify-content:space-between;margin-bottom:15px;font-size:13px;color:#333}
-    .inv-table{width:100%;border-collapse:collapse;margin:15px 0;font-size:13px}
-    .inv-table th{background:linear-gradient(135deg,#00d4ff,#7b2ffa)!important;color:#fff!important;padding:10px;text-align:right;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-    .inv-table td{padding:8px 10px;border-bottom:1px solid #ddd;text-align:right}
-    .inv-table tr:nth-child(even){background:#f5f5ff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-    .inv-totals{margin-top:15px;text-align:left}
-    .inv-totals .inv-row{display:flex;justify-content:space-between;padding:5px 0;font-size:14px}
-    .inv-totals .inv-grand{font-size:22px;font-weight:900;color:#00d4ff!important;border-top:2px solid #00d4ff;padding-top:10px;margin-top:8px}
-    .inv-footer{text-align:center;padding:20px;border-top:2px dashed #00d4ff;margin-top:20px;color:#666;font-size:12px}
-    .inv-footer .inv-thanks{font-size:18px;font-weight:700;color:#7b2ffa!important;margin-bottom:5px}
-    .inv-badge{display:inline-block;padding:3px 12px;border-radius:15px;font-size:11px;font-weight:700}
-    .inv-badge.pc{background:#e0f7ff;color:#0099cc}
-    .inv-badge.console{background:#f0e6ff;color:#7b2ffa}
-    .inv-badge.sale{background:#e6fff0;color:#00aa55}
+    .print-invoice{position:absolute;top:0;left:0;right:0;width:100%;background:#fff!important;color:#1a1a2e!important;font-family:'Tajawal',sans-serif;padding:0;margin:0}
+    .print-invoice table{display:table!important}
+    .print-invoice thead{display:table-header-group!important}
+    .print-invoice tbody{display:table-row-group!important}
+    .print-invoice tr{display:table-row!important}
+    .print-invoice th,.print-invoice td{display:table-cell!important}
+    .acc-header{text-align:center;padding:30px 20px 20px;background:linear-gradient(135deg,#0a0a1a 0%,#141428 50%,#7b2ffa 100%)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;border-bottom:4px solid #00d4ff}
+    .acc-logo{font-size:40px;margin-bottom:10px}
+    .acc-header h1{color:#00d4ff!important;font-size:32px;letter-spacing:4px;margin-bottom:5px;font-weight:900}
+    .acc-header p{color:#e8e8f0!important;font-size:14px;margin:2px 0}
+    .acc-title{background:linear-gradient(135deg,#00d4ff,#7b2ffa)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#fff!important;padding:12px;text-align:center;font-size:18px;font-weight:900;letter-spacing:2px;margin:20px 0 0}
+    .acc-body{padding:20px 30px}
+    .acc-meta{background:#f0f4ff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:15px;border-radius:8px;margin-bottom:20px;border-right:4px solid #00d4ff}
+    .acc-meta-row{display:flex;justify-content:space-between;padding:4px 0;font-size:14px;color:#333}
+    .acc-meta-row strong{color:#0a0a1a}
+    .acc-section-title{background:#7b2ffa!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#fff!important;padding:8px 12px;font-size:14px;font-weight:700;margin:15px 0 8px;border-radius:4px}
+    .acc-table{width:100%;border-collapse:collapse;margin-bottom:15px;font-size:13px}
+    .acc-table th{background:linear-gradient(135deg,#00d4ff,#0099cc)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#fff!important;padding:10px 12px;text-align:right;font-weight:700}
+    .acc-table td{padding:8px 12px;border-bottom:1px solid #ddd;text-align:right;color:#333}
+    .acc-table tr:nth-child(even) td{background:#f8f9ff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .acc-table .num{font-weight:700;color:#00aa55}
+    .acc-summary{margin-top:20px;background:linear-gradient(135deg,#1a1a2e,#0a0a1a)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#fff!important;padding:20px;border-radius:10px;border:2px solid #00d4ff}
+    .acc-sum-row{display:flex;justify-content:space-between;padding:8px 0;font-size:15px;color:#fff!important;border-bottom:1px dashed rgba(255,255,255,0.2)}
+    .acc-sum-row span{color:#fff!important}
+    .acc-grand{display:flex;justify-content:space-between;padding:15px 0 5px;font-size:24px;font-weight:900;color:#00ff88!important;border-top:3px double #00d4ff;margin-top:10px}
+    .acc-grand span{color:#00ff88!important}
+    .acc-signature{display:flex;justify-content:space-between;margin-top:40px;padding:20px 0;border-top:2px dashed #7b2ffa}
+    .acc-sign-box{width:45%;text-align:center;font-size:13px;color:#666}
+    .acc-sign-line{border-top:2px solid #333;margin-top:50px;padding-top:8px;font-weight:700;color:#0a0a1a}
+    .acc-footer{text-align:center;padding:20px;background:#0a0a1a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#00d4ff!important;margin-top:20px;font-size:12px}
+    .acc-footer p{color:#e8e8f0!important;margin:3px 0}
+    .acc-footer .thanks{color:#00d4ff!important;font-size:16px;font-weight:700;margin-bottom:8px}
 }
 
 @media(max-width:768px){
