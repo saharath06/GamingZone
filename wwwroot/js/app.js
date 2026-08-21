@@ -1,4 +1,28 @@
-/* Gaming Zone v3 - All Fixed */
+/* Gaming Zone v4 - Custom Names + Emoji Picker + Single Page Invoice */
+
+// ===== الأيقونات المتاحة =====
+const EMOJI_LIBRARY = {
+    coffee: ['☕','🫖','🍵','🥛','🧋','🍶','🥃','🍷','🫗','♨️'],
+    drinks: ['🥤','🧃','🧉','🍹','🍸','🍺','🍻','🥂','🍾','🥥','🍋','🍊','💧'],
+    chips: ['🍿','🥨','🥜','🌰','🫘','🍘','🍙','🍚','🍢','🥠','🍫','🍬','🍭'],
+    cake: ['🍰','🎂','🧁','🍮','🍩','🥐','🥖','🍪','🥧','🫓','🥯','🍞','🥞'],
+    food: ['🍔','🍟','🌭','🥪','🌮','🌯','🫔','🥙','🧆','🍕','🥘','🍝','🍜','🍲','🥟','🍱','🍣'],
+    other: ['📦','🎁','🛍️','🎯','🎮','🎲','🃏','🎨','📱','💻','🖥️','⌨️','🖱️','🎧','📸','🎬']
+};
+
+const ALL_EMOJIS = [
+    '☕','🫖','🍵','🥛','🧋','🍶','🥃','🍷','♨️',
+    '🥤','🧃','🧉','🍹','🍸','🍺','🍻','🥂','🥥','💧',
+    '🍿','🥨','🥜','🌰','🫘','🍘','🍙','🍚','🍢','🥠',
+    '🍫','🍬','🍭','🍰','🎂','🧁','🍮','🍩','🥐','🥖',
+    '🍪','🥧','🫓','🥯','🍞','🥞','🍔','🍟','🌭','🥪',
+    '🌮','🌯','🫔','🥙','🧆','🍕','🥘','🍝','🍜','🍲',
+    '🥟','🍱','🍣','🍤','🍙','🍘','🍡','🍧','🍨','🍦',
+    '🍎','🍏','🍊','🍋','🍌','🍉','🍇','🍓','🫐','🍒',
+    '🥝','🍍','🥭','🍑','🥑','🥕','🌽','🥔','🍄','🧀',
+    '📦','🎁','🛍️','🎯','🎮','🎲','🃏','📱','💻','🎧'
+];
+
 function getDefaultData(){
     return {
         pcPricePerHour:50,
@@ -26,6 +50,21 @@ function getDefaultData(){
     };
 }
 
+function getSettings(){
+    try{
+        return JSON.parse(localStorage.getItem('gzSettings')||'{}');
+    }catch(e){return {};}
+}
+function saveSettings(s){localStorage.setItem('gzSettings',JSON.stringify(s));}
+
+function getUserName(role){
+    const s=getSettings();
+    if(role==='owner') return s.ownerName||'المالك';
+    if(role==='morning') return s.morningName||'عامل الصباح';
+    if(role==='evening') return s.eveningName||'عامل المساء';
+    return role;
+}
+
 function getData(){
     try{
         const s=localStorage.getItem('gamingZoneData');
@@ -34,6 +73,10 @@ function getData(){
         const def=getDefaultData();
         for(let k in def)if(!(k in d))d[k]=def[k];
         if(!d.pcCount)d.pcCount=9;
+        // تحديث الأسعار من الإعدادات
+        const settings=getSettings();
+        if(settings.pcPrice)d.pcPricePerHour=settings.pcPrice;
+        if(settings.consolePrice)d.consolePricePerHalf=settings.consolePrice;
         return d;
     }catch(e){return getDefaultData();}
 }
@@ -41,6 +84,7 @@ function saveData(d){localStorage.setItem('gamingZoneData',JSON.stringify(d));}
 
 let currentUser=null,currentModal=null,modalCart=[],qsCart=[],editingProdId=null;
 let pieC=null,barC=null;
+let selectedEmojiAdd='☕',selectedEmojiEdit='☕';
 
 function getToday(){
     const d=new Date();
@@ -67,25 +111,29 @@ function addTx(type,amount,details){
     };
     d.transactions.push(tx);
     saveData(d);
-    console.log('✅ TX SAVED:',tx);
     return tx;
 }
 
 function initDashboard(){
     currentUser=localStorage.getItem('currentUser')||'owner';
     document.body.className='dashboard-page role-'+currentUser;
-    const N={owner:'المالك',morning:'عامل الصباح',evening:'عامل المساء'};
+    
     const A={owner:'👑',morning:'🌅',evening:'🌙'};
     const S={owner:'كامل الصلاحيات',morning:'وردية الصباح ☀️',evening:'وردية المساء 🌙'};
     const e=id=>document.getElementById(id);
-    if(e('userName'))e('userName').textContent=N[currentUser];
+    
+    if(e('userName'))e('userName').textContent=getUserName(currentUser);
     if(e('userAvatar'))e('userAvatar').textContent=A[currentUser];
     if(e('userShift'))e('userShift').textContent=S[currentUser];
     if(e('shiftBadge'))e('shiftBadge').textContent=S[currentUser];
+    
     setupNav();
     updateClock();setInterval(updateClock,1000);
     renderPC();renderCon();renderProdTable();updateOv();renderQS();
     startConTimers();startPCTimers();
+    renderEmojiPicker('emojiPickerAdd','prodEmoji','add');
+    loadSettingsForm();
+    
     const f=e('addProductForm');
     if(f)f.addEventListener('submit',ev=>{ev.preventDefault();addProd();});
 }
@@ -114,20 +162,78 @@ function setupNav(){
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');}
 function logout(){localStorage.removeItem('currentUser');window.location.href='/index.html';}
 
-/* ===== END SHIFT + PRINT ACCOUNTING ===== */
+/* ===== EMOJI PICKER ===== */
+function renderEmojiPicker(containerId,hiddenId,type){
+    const container=document.getElementById(containerId);
+    if(!container)return;
+    container.innerHTML=ALL_EMOJIS.map(em=>'<div class="emoji-option" onclick="selectEmoji(\''+em+'\',\''+hiddenId+'\',\''+type+'\',this)">'+em+'</div>').join('');
+}
+
+function selectEmoji(em,hiddenId,type,element){
+    document.getElementById(hiddenId).value=em;
+    if(type==='add')selectedEmojiAdd=em;
+    else selectedEmojiEdit=em;
+    element.parentElement.querySelectorAll('.emoji-option').forEach(x=>x.classList.remove('selected'));
+    element.classList.add('selected');
+}
+
+/* ===== SETTINGS ===== */
+function loadSettingsForm(){
+    if(currentUser!=='owner')return;
+    const s=getSettings();
+    const d=getData();
+    const e=id=>document.getElementById(id);
+    if(e('morningWorkerName'))e('morningWorkerName').value=s.morningName||'';
+    if(e('morningWorkerPass'))e('morningWorkerPass').value=s.morningPass||'morning123';
+    if(e('eveningWorkerName'))e('eveningWorkerName').value=s.eveningName||'';
+    if(e('eveningWorkerPass'))e('eveningWorkerPass').value=s.eveningPass||'evening123';
+    if(e('ownerName'))e('ownerName').value=s.ownerName||'';
+    if(e('ownerPass'))e('ownerPass').value=s.ownerPass||'owner123';
+    if(e('pcPriceInput'))e('pcPriceInput').value=d.pcPricePerHour;
+    if(e('consolePriceInput'))e('consolePriceInput').value=d.consolePricePerHalf;
+}
+
+function saveWorkersSettings(){
+    const s=getSettings();
+    s.morningName=document.getElementById('morningWorkerName').value.trim();
+    s.morningPass=document.getElementById('morningWorkerPass').value.trim()||'morning123';
+    s.eveningName=document.getElementById('eveningWorkerName').value.trim();
+    s.eveningPass=document.getElementById('eveningWorkerPass').value.trim()||'evening123';
+    s.ownerName=document.getElementById('ownerName').value.trim();
+    s.ownerPass=document.getElementById('ownerPass').value.trim()||'owner123';
+    saveSettings(s);
+    alert('✅ تم حفظ الإعدادات\n\nستُطبّق الأسماء والكلمات الجديدة في المرة القادمة عند تسجيل الدخول.');
+    // تحديث الاسم الظاهر فوراً
+    document.getElementById('userName').textContent=getUserName(currentUser);
+}
+
+function savePrices(){
+    const s=getSettings();
+    const pcP=parseInt(document.getElementById('pcPriceInput').value);
+    const conP=parseInt(document.getElementById('consolePriceInput').value);
+    if(pcP>0)s.pcPrice=pcP;
+    if(conP>0)s.consolePrice=conP;
+    saveSettings(s);
+    // تحديث في البيانات
+    const d=getData();
+    if(pcP>0)d.pcPricePerHour=pcP;
+    if(conP>0)d.consolePricePerHalf=conP;
+    saveData(d);
+    renderPC();renderCon();
+    alert('✅ تم حفظ الأسعار الجديدة');
+}
+
+/* ===== END SHIFT + SINGLE PAGE INVOICE ===== */
 function endShift(){
     if(currentUser==='owner'){alert('المالك لا يحتاج إنهاء وردية');return;}
     const my=getMyTx();
     const tot=my.reduce((s,t)=>s+(Number(t.amount)||0),0);
     const nm=currentUser==='morning'?'الصباح ☀️':'المساء 🌙';
-    if(!confirm('⚠️ إنهاء وردية '+nm+'؟\n\nإجمالي: '+tot+' دج\nعمليات: '+my.length+'\n\nسيتم طباعة فاتورة المحاسبة تلقائياً.'))return;
+    if(!confirm('⚠️ إنهاء وردية '+nm+'؟\n\nإجمالي: '+tot+' دج\nعمليات: '+my.length+'\n\nسيتم طباعة فاتورة المحاسبة تلقائياً في صفحة واحدة.'))return;
     
-    // بناء فاتورة المحاسبة
     buildAccountingInvoice(my,tot,nm);
-    
     addTx('shift_end',0,'انتهاء وردية '+nm+' - الإجمالي: '+tot+' دج');
     
-    // طباعة ثم خروج
     setTimeout(()=>{
         window.print();
         setTimeout(()=>{
@@ -149,26 +255,31 @@ function buildAccountingInvoice(transactions,total,shiftName){
     const consCount=transactions.filter(t=>t.type==='console_time').length;
     const prodCount=transactions.filter(t=>t.type==='product_sale').length;
     
-    const workerName=currentUser==='morning'?'عامل الصباح':'عامل المساء';
+    const workerName=getUserName(currentUser);
+    const ownerName=getSettings().ownerName||'المالك';
+    const realTransactions=transactions.filter(t=>t.type!=='shift_end');
     
-    let html='<div class="acc-header">';
+    let html='<div class="acc-container">';
+    
+    // Header مختصر
+    html+='<div class="acc-header">';
     html+='<div class="acc-logo">🎮</div>';
     html+='<h1>GAMING ZONE</h1>';
     html+='<p>نظام إدارة صالة الألعاب</p>';
-    html+='<p style="font-size:11px;opacity:0.8">Gaming & Entertainment Center</p>';
     html+='</div>';
     
     html+='<div class="acc-title">📋 فاتورة محاسبة نهاية الوردية 📋</div>';
     
     html+='<div class="acc-body">';
     
-    // معلومات الوردية
+    // Meta grid
     html+='<div class="acc-meta">';
     html+='<div class="acc-meta-row"><span><strong>👤 العامل:</strong></span><span>'+workerName+'</span></div>';
+    html+='<div class="acc-meta-row"><span><strong>👑 المسلَّم إليه:</strong></span><span>'+ownerName+'</span></div>';
     html+='<div class="acc-meta-row"><span><strong>📅 التاريخ:</strong></span><span>'+dateStr+'</span></div>';
     html+='<div class="acc-meta-row"><span><strong>🕐 وقت الإغلاق:</strong></span><span>'+timeStr+'</span></div>';
     html+='<div class="acc-meta-row"><span><strong>⏰ الوردية:</strong></span><span>'+shiftName+'</span></div>';
-    html+='<div class="acc-meta-row"><span><strong>📊 عدد العمليات:</strong></span><span>'+transactions.filter(t=>t.type!=='shift_end').length+' عملية</span></div>';
+    html+='<div class="acc-meta-row"><span><strong>📊 عدد العمليات:</strong></span><span>'+realTransactions.length+'</span></div>';
     html+='</div>';
     
     // ملخص المداخيل
@@ -179,17 +290,17 @@ function buildAccountingInvoice(transactions,total,shiftName){
     html+='<tr><td>🛒 السلع والمشروبات</td><td style="text-align:center">'+prodCount+'</td><td style="text-align:left" class="num">'+prodTotal+' دج</td></tr>';
     html+='</tbody></table>';
     
-    // تفاصيل العمليات
-    html+='<div class="acc-section-title">📋 تفاصيل جميع العمليات</div>';
-    html+='<table class="acc-table"><thead><tr><th>الوقت</th><th>النوع</th><th>التفاصيل</th><th style="text-align:left">المبلغ</th></tr></thead><tbody>';
-    const types={pc_time:'🖥️ PC',console_time:'🎮 كونسول',product_sale:'🛒 سلع'};
-    transactions.filter(t=>t.type!=='shift_end').forEach(t=>{
-        html+='<tr><td>'+t.time+'</td><td>'+(types[t.type]||t.type)+'</td><td style="font-size:11px">'+t.details+'</td><td style="text-align:left" class="num">'+t.amount+' دج</td></tr>';
-    });
-    if(transactions.filter(t=>t.type!=='shift_end').length===0){
-        html+='<tr><td colspan="4" style="text-align:center;color:#999">لا توجد عمليات في هذه الوردية</td></tr>';
+    // تفاصيل مختصرة
+    if(realTransactions.length>0){
+        html+='<div class="acc-section-title">📋 تفاصيل العمليات ('+realTransactions.length+' عملية)</div>';
+        html+='<table class="acc-table"><thead><tr><th>الوقت</th><th>النوع</th><th>التفاصيل</th><th style="text-align:left">المبلغ</th></tr></thead><tbody>';
+        const types={pc_time:'🖥️ PC',console_time:'🎮 كونسول',product_sale:'🛒 سلع'};
+        realTransactions.forEach(t=>{
+            const shortDetails=t.details.length>60?t.details.substring(0,60)+'...':t.details;
+            html+='<tr><td>'+t.time+'</td><td>'+(types[t.type]||t.type)+'</td><td style="font-size:9px">'+shortDetails+'</td><td style="text-align:left" class="num">'+t.amount+' دج</td></tr>';
+        });
+        html+='</tbody></table>';
     }
-    html+='</tbody></table>';
     
     // الملخص النهائي
     html+='<div class="acc-summary">';
@@ -201,7 +312,7 @@ function buildAccountingInvoice(transactions,total,shiftName){
     // التوقيعات
     html+='<div class="acc-signature">';
     html+='<div class="acc-sign-box"><div class="acc-sign-line">توقيع العامل</div><div>'+workerName+'</div></div>';
-    html+='<div class="acc-sign-box"><div class="acc-sign-line">توقيع المالك / المدير</div><div>استلام المبلغ</div></div>';
+    html+='<div class="acc-sign-box"><div class="acc-sign-line">توقيع المالك</div><div>'+ownerName+'</div></div>';
     html+='</div>';
     
     html+='</div>';
@@ -209,14 +320,15 @@ function buildAccountingInvoice(transactions,total,shiftName){
     // Footer
     html+='<div class="acc-footer">';
     html+='<p class="thanks">🎮 GAMING ZONE 🎮</p>';
-    html+='<p>نظام إدارة الصالة - فاتورة محاسبة رسمية</p>';
-    html+='<p style="opacity:0.7;margin-top:8px">طُبعت في: '+dateStr+' - '+timeStr+'</p>';
+    html+='<p>طُبعت في: '+dateStr+' - '+timeStr+'</p>';
+    html+='</div>';
+    
     html+='</div>';
     
     document.getElementById('printInvoice').innerHTML=html;
 }
 
-/* ===== PC (50 دج/ساعة نسبي) ===== */
+/* ===== PC ===== */
 function renderPC(){
     const g=document.getElementById('pcGrid');if(!g)return;
     const d=getData();let h='';
@@ -225,7 +337,6 @@ function renderPC(){
         const a=s&&s.active;
         const el=a?s.elapsedMinutes||0:0;
         const hr=Math.floor(el/60),mn=Math.floor(el%60);
-        // ⭐ حساب نسبي بالدقيقة
         const pcCost=Math.round((el/60)*d.pcPricePerHour);
         const co=s?s.consumption||[]:[];
         const ct=co.reduce((a,c)=>a+c.price*c.qty,0);
@@ -354,7 +465,7 @@ function startConTimers(){
     },1000);
 }
 
-/* ===== SESSION MODAL (Add Products) ===== */
+/* ===== SESSION MODAL ===== */
 function openConModal(type,id){
     currentModal={type:type,id:id};
     modalCart=[];
@@ -376,20 +487,13 @@ function addMC(id){
     const d=getData(),p=d.products.find(x=>x.id===id);
     if(!p||p.stock<=0){alert('السلعة غير متوفرة');return;}
     const e=modalCart.find(x=>x.id===id);
-    if(e){
-        if(e.qty<p.stock)e.qty++;
-        else alert('لا يوجد مخزون كافي');
-    }else{
-        modalCart.push({id:p.id,name:p.name,price:p.price,qty:1});
-    }
+    if(e){if(e.qty<p.stock)e.qty++;else alert('لا يوجد مخزون كافي');}
+    else{modalCart.push({id:p.id,name:p.name,price:p.price,qty:1});}
     renderMC();
 }
 function renderMC(){
     const c=document.getElementById('modalCartItems'),t=document.getElementById('modalCartTotal');
-    if(!modalCart.length){
-        c.innerHTML='<p class="empty-msg" style="padding:4px">لم تختر سلعاً</p>';
-        t.textContent='0 دج';return;
-    }
+    if(!modalCart.length){c.innerHTML='<p class="empty-msg" style="padding:4px">لم تختر سلعاً</p>';t.textContent='0 دج';return;}
     c.innerHTML=modalCart.map(x=>'<div class="cart-item"><span>'+x.name+' ×'+x.qty+'</span><span style="color:var(--neon-green)">'+x.price*x.qty+' دج</span></div>').join('');
     t.textContent=modalCart.reduce((s,x)=>s+x.price*x.qty,0)+' دج';
 }
@@ -400,9 +504,7 @@ function saveSessionCon(){
     const type=currentModal.type,id=currentModal.id;
     const s=type==='pc'?d.pcSessions['pc'+id]:d.consoleSessions[id];
     if(!s){alert('خطأ: الجلسة غير موجودة');return;}
-    
-    let total=0;
-    const details=[];
+    let total=0;const details=[];
     modalCart.forEach(ci=>{
         const e=s.consumption.find(x=>x.id===ci.id);
         if(e)e.qty+=ci.qty;
@@ -412,19 +514,16 @@ function saveSessionCon(){
         total+=ci.price*ci.qty;
         details.push(ci.name+'×'+ci.qty);
     });
-    
     saveData(d);
-    
     const dn=type==='pc'?'PC#'+id:d.consoles.find(c=>c.id===id).name;
     addTx('product_sale',total,dn+': '+details.join(', '));
-    
     closeM('sessionModal');
     if(type==='pc')renderPC();else renderCon();
     updateOv();renderProdTable();
     alert('✅ تم إضافة السلع: '+total+' دج');
 }
 
-/* ===== CHECKOUT MODAL ===== */
+/* ===== CHECKOUT ===== */
 function openChkModal(type,id){
     currentModal={type:type,id:id};
     const d=getData();
@@ -435,10 +534,9 @@ function openChkModal(type,id){
     const ct=co.reduce((a,c)=>a+c.price*c.qty,0);
     let tt=0,tl='';
     if(type==='pc'){
-        // ⭐ حساب نسبي حقيقي
         const mins=s.elapsedMinutes||0;
         tt=Math.round((mins/60)*d.pcPricePerHour);
-        tl='وقت اللعب ('+Math.floor(mins/60)+' س '+Math.floor(mins%60)+' د × '+d.pcPricePerHour+' دج/ساعة نسبي)';
+        tl='وقت اللعب ('+Math.floor(mins/60)+' س '+Math.floor(mins%60)+' د × '+d.pcPricePerHour+' دج/ساعة)';
     }else{
         tt=(s.totalHalves||0)*d.consolePricePerHalf;
         tl='وقت اللعب ('+(s.totalHalves||0)+' × نصف ساعة × '+d.consolePricePerHalf+' دج)';
@@ -447,11 +545,8 @@ function openChkModal(type,id){
     html+='<div style="display:flex;justify-content:space-between;margin:4px 0"><span>'+tl+':</span><strong style="color:var(--neon-blue)">'+tt+' دج</strong></div>';
     html+='<div style="font-weight:600;margin-top:8px;font-size:12px">السلع:</div>';
     html+='<div style="background:var(--bg-input);padding:8px;border-radius:6px;margin:4px 0;font-size:12px">';
-    if(co.length){
-        co.forEach(c=>{html+='<div style="display:flex;justify-content:space-between;padding:2px 0"><span>'+c.name+' ×'+c.qty+'</span><span>'+c.price*c.qty+' دج</span></div>';});
-    }else{
-        html+='<span style="color:var(--text-muted)">لا توجد سلع</span>';
-    }
+    if(co.length){co.forEach(c=>{html+='<div style="display:flex;justify-content:space-between;padding:2px 0"><span>'+c.name+' ×'+c.qty+'</span><span>'+c.price*c.qty+' دج</span></div>';});}
+    else{html+='<span style="color:var(--text-muted)">لا توجد سلع</span>';}
     html+='</div>';
     html+='<div style="display:flex;justify-content:space-between;margin:4px 0"><span>مجموع السلع:</span><strong style="color:var(--neon-orange)">'+ct+' دج</strong></div>';
     html+='<div style="display:flex;justify-content:space-between;font-size:20px;font-weight:900;margin-top:12px;padding-top:10px;border-top:1px solid var(--border-color)"><span>💰 المطلوب من الزبون:</span><span style="color:var(--neon-green)">'+(tt+ct)+' دج</span></div>';
@@ -466,21 +561,14 @@ function confirmChk(){
     if(!s)return;
     const dn=type==='pc'?'PC #'+id:d.consoles.find(c=>c.id===id).name;
     let tt=0;
-    if(type==='pc'){
-        const mins=s.elapsedMinutes||0;
-        tt=Math.round((mins/60)*d.pcPricePerHour);
-    }else{
-        tt=(s.totalHalves||0)*d.consolePricePerHalf;
-    }
-    
+    if(type==='pc'){const mins=s.elapsedMinutes||0;tt=Math.round((mins/60)*d.pcPricePerHour);}
+    else{tt=(s.totalHalves||0)*d.consolePricePerHalf;}
     if(tt>0) addTx(type==='pc'?'pc_time':'console_time',tt,dn+': وقت اللعب');
-    
-    if(type==='pc')delete d.pcSessions['pc'+id];
-    else delete d.consoleSessions[id];
+    if(type==='pc')delete d.pcSessions['pc'+id];else delete d.consoleSessions[id];
     saveData(d);
     closeM('checkoutModal');
     renderPC();renderCon();updateOv();
-    alert('✅ تم قبض: '+tt+' دج (وقت اللعب فقط - السلع سُجّلت سابقاً)');
+    alert('✅ تم قبض: '+tt+' دج (وقت اللعب)');
 }
 function closeM(id){document.getElementById(id).classList.remove('active');}
 
@@ -507,7 +595,7 @@ function renderQSG(c){
 }
 function addQS(id){
     const d=getData(),p=d.products.find(x=>x.id===id);
-    if(!p||p.stock<=0){alert('السلعة غير متوفرة');return;}
+    if(!p||p.stock<=0){alert('غير متوفرة');return;}
     const e=qsCart.find(x=>x.id===id);
     if(e){if(e.qty<p.stock)e.qty++;}
     else qsCart.push({id:p.id,name:p.name,price:p.price,qty:1});
@@ -516,10 +604,7 @@ function addQS(id){
 function renderQSC(){
     const c=document.getElementById('qsInvoiceItems'),t=document.getElementById('qsTotal');
     if(!c)return;
-    if(!qsCart.length){
-        c.innerHTML='<p class="empty-msg">اختر سلعاً</p>';
-        t.textContent='0 دج';return;
-    }
+    if(!qsCart.length){c.innerHTML='<p class="empty-msg">اختر سلعاً</p>';t.textContent='0 دج';return;}
     c.innerHTML=qsCart.map((item,idx)=>'<div class="invoice-item"><div class="item-info"><span class="item-remove" onclick="rmQS('+idx+')"><i class="fas fa-trash"></i></span> <span>'+item.name+'</span></div><div><button class="qty-btn" onclick="chQS('+idx+',-1)">-</button> <span>'+item.qty+'</span> <button class="qty-btn" onclick="chQS('+idx+',1)">+</button></div><div style="font-weight:700;color:var(--neon-green)">'+item.price*item.qty+' دج</div></div>').join('');
     t.textContent=qsCart.reduce((s,c)=>s+c.price*c.qty,0)+' دج';
 }
@@ -532,13 +617,10 @@ function chQS(i,d){
 }
 function rmQS(i){qsCart.splice(i,1);renderQSC();}
 function completeQS(){
-    if(!qsCart.length){alert('اختر سلعاً أولاً');return;}
+    if(!qsCart.length){alert('اختر سلعاً');return;}
     const d=getData();
     const tot=qsCart.reduce((s,c)=>s+c.price*c.qty,0);
-    qsCart.forEach(item=>{
-        const p=d.products.find(x=>x.id===item.id);
-        if(p)p.stock=Math.max(0,p.stock-item.qty);
-    });
+    qsCart.forEach(item=>{const p=d.products.find(x=>x.id===item.id);if(p)p.stock=Math.max(0,p.stock-item.qty);});
     saveData(d);
     addTx('product_sale',tot,'بيع مباشر: '+qsCart.map(c=>c.name+'×'+c.qty).join(', '));
     qsCart=[];
@@ -550,19 +632,16 @@ function completeQS(){
 function addProd(){
     const d=getData();
     const nm=document.getElementById('prodName').value.trim();
-    const em=document.getElementById('prodEmoji').value.trim();
+    const em=document.getElementById('prodEmoji').value||selectedEmojiAdd||'📦';
     const cat=document.getElementById('prodCategory').value;
     const pr=parseInt(document.getElementById('prodPrice').value);
     const st=parseInt(document.getElementById('prodStock').value);
     const ms=parseInt(document.getElementById('prodMinStock').value)||5;
-    const defaultEm={coffee:'☕',drinks:'🥤',chips:'🍿',cake:'🍰',food:'🍔',other:'📦'};
-    d.products.push({
-        id:d.nextProductId++,
-        name:nm,category:cat,price:pr,stock:st,minStock:ms,
-        emoji:em||defaultEm[cat]||'📦'
-    });
+    d.products.push({id:d.nextProductId++,name:nm,category:cat,price:pr,stock:st,minStock:ms,emoji:em});
     saveData(d);
     document.getElementById('addProductForm').reset();
+    document.getElementById('prodEmoji').value='☕';
+    selectedEmojiAdd='☕';
     renderProdTable();renderQS();updateOv();
     alert('✅ تمت إضافة '+nm);
 }
@@ -599,6 +678,14 @@ function openEditProd(id){
     document.getElementById('editPrice').value=p.price;
     document.getElementById('editStock').value=p.stock;
     document.getElementById('editMinStock').value=p.minStock;
+    selectedEmojiEdit=p.emoji;
+    renderEmojiPicker('emojiPickerEdit','editEmoji','edit');
+    // تحديد الأيقونة الحالية
+    setTimeout(()=>{
+        document.querySelectorAll('#emojiPickerEdit .emoji-option').forEach(el=>{
+            if(el.textContent===p.emoji)el.classList.add('selected');
+        });
+    },50);
     document.getElementById('editProductModal').classList.add('active');
 }
 
@@ -608,7 +695,7 @@ function saveEditProd(){
     const p=d.products.find(x=>x.id===id);
     if(!p)return;
     p.name=document.getElementById('editName').value.trim();
-    p.emoji=document.getElementById('editEmoji').value.trim()||p.emoji;
+    p.emoji=document.getElementById('editEmoji').value||selectedEmojiEdit||p.emoji;
     p.category=document.getElementById('editCategory').value;
     p.price=parseInt(document.getElementById('editPrice').value);
     p.stock=parseInt(document.getElementById('editStock').value);
@@ -633,13 +720,11 @@ function updateOv(){
     let ap=0,ac=0;
     for(let k in d.pcSessions)if(d.pcSessions[k]&&d.pcSessions[k].active)ap++;
     for(let k in d.consoleSessions)if(d.consoleSessions[k]&&d.consoleSessions[k].remainingMinutes>0)ac++;
-    
     const my=getMyTx();
     const st=my.reduce((s,t)=>s+(Number(t.amount)||0),0);
     const pt=my.filter(t=>t.type==='pc_time'||t.type==='console_time').reduce((s,t)=>s+t.amount,0);
     const pd=my.filter(t=>t.type==='product_sale').reduce((s,t)=>s+t.amount,0);
     const opsCount=my.filter(t=>t.type!=='shift_end').length;
-    
     const e=id=>document.getElementById(id);
     if(e('activePCs'))e('activePCs').textContent=ap;
     if(e('activeConsoles'))e('activeConsoles').textContent=ac;
@@ -648,7 +733,6 @@ function updateOv(){
     if(e('pcRevenue'))e('pcRevenue').textContent=pt+' دج';
     if(e('productRevenue'))e('productRevenue').textContent=pd+' دج';
     if(e('totalOrders'))e('totalOrders').textContent=opsCount;
-    
     const bx=e('lowStockAlerts');
     if(bx){
         const low=d.products.filter(p=>p.stock<=p.minStock);
@@ -656,35 +740,20 @@ function updateOv(){
     }
 }
 
-/* ===== CHARTS ===== */
+/* ===== CHARTS + REPORTS ===== */
 function renderCharts(){
     const d=getData(),t=getToday();
     const tr=d.transactions.filter(x=>x.date===t);
     const pc=tr.filter(x=>x.type==='pc_time').reduce((s,x)=>s+x.amount,0);
     const co=tr.filter(x=>x.type==='console_time').reduce((s,x)=>s+x.amount,0);
     const pd=tr.filter(x=>x.type==='product_sale').reduce((s,x)=>s+x.amount,0);
-    
     if(pieC)pieC.destroy();
     const pCtx=document.getElementById('revenuePieChart');
-    if(pCtx){
-        pieC=new Chart(pCtx,{
-            type:'doughnut',
-            data:{labels:['PC','كونسول','سلع'],datasets:[{data:[pc||1,co||1,pd||1],backgroundColor:['#00d4ff','#7b2ffa','#ff8800'],borderWidth:0}]},
-            options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#e8e8f0',font:{family:'Tajawal'}}}}}
-        });
-    }
+    if(pCtx){pieC=new Chart(pCtx,{type:'doughnut',data:{labels:['PC','كونسول','سلع'],datasets:[{data:[pc||1,co||1,pd||1],backgroundColor:['#00d4ff','#7b2ffa','#ff8800'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#e8e8f0',font:{family:'Tajawal'}}}}}});}
     if(barC)barC.destroy();
     const bCtx=document.getElementById('revenueBarChart');
-    if(bCtx){
-        barC=new Chart(bCtx,{
-            type:'bar',
-            data:{labels:['PC','كونسول','سلع'],datasets:[{label:'دج',data:[pc,co,pd],backgroundColor:['#00d4ff','#7b2ffa','#ff8800'],borderRadius:8}]},
-            options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#222244'},ticks:{color:'#7777aa'}},x:{grid:{display:false},ticks:{color:'#e8e8f0',font:{family:'Tajawal'}}}}}
-        });
-    }
+    if(bCtx){barC=new Chart(bCtx,{type:'bar',data:{labels:['PC','كونسول','سلع'],datasets:[{label:'دج',data:[pc,co,pd],backgroundColor:['#00d4ff','#7b2ffa','#ff8800'],borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#222244'},ticks:{color:'#7777aa'}},x:{grid:{display:false},ticks:{color:'#e8e8f0',font:{family:'Tajawal'}}}}}});}
 }
-
-/* ===== REPORTS ===== */
 function genReport(){
     const d=getData(),t=getToday();
     const tr=d.transactions.filter(x=>x.date===t);

@@ -1,85 +1,95 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gaming Zone - تسجيل الدخول</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaming Zone - تسجيل الدخول</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="login-page">
-    <div class="particles" id="particles"></div>
+<div class="particles" id="particles"></div>
+
+<div class="login-container">
+<div class="login-logo">
+<div class="logo-icon"><i class="fas fa-gamepad"></i></div>
+<h1>GAMING <span class="neon-text">ZONE</span></h1>
+<p class="login-subtitle">نظام إدارة الصالة</p>
+</div>
+
+<form id="loginForm" class="login-form">
+<div class="input-group">
+<i class="fas fa-user"></i>
+<select id="loginRole" required>
+<option value="">اختر الحساب</option>
+<option value="owner" id="optOwner">👑 المالك</option>
+<option value="morning" id="optMorning">🌅 عامل الصباح</option>
+<option value="evening" id="optEvening">🌙 عامل المساء</option>
+</select>
+</div>
+
+<div class="input-group">
+<i class="fas fa-lock"></i>
+<input type="password" id="loginPassword" placeholder="كلمة المرور" required>
+</div>
+
+<button type="submit" class="btn-login">
+<span>دخول</span>
+<i class="fas fa-arrow-left"></i>
+</button>
+</form>
+</div>
+
+<script>
+const particlesContainer = document.getElementById('particles');
+for(let i = 0; i < 40; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.top = Math.random() * 100 + '%';
+    particle.style.animationDelay = Math.random() * 4 + 's';
+    particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+    particlesContainer.appendChild(particle);
+}
+
+// تحميل الأسماء المخصصة
+function loadCustomNames() {
+    try {
+        const settings = JSON.parse(localStorage.getItem('gzSettings') || '{}');
+        if (settings.ownerName) document.getElementById('optOwner').textContent = '👑 ' + settings.ownerName;
+        if (settings.morningName) document.getElementById('optMorning').textContent = '🌅 ' + settings.morningName;
+        if (settings.eveningName) document.getElementById('optEvening').textContent = '🌙 ' + settings.eveningName;
+    } catch(e) {}
+}
+loadCustomNames();
+
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const role = document.getElementById('loginRole').value;
+    const password = document.getElementById('loginPassword').value;
     
-    <div class="login-container">
-        <div class="login-logo">
-            <div class="logo-icon">
-                <i class="fas fa-gamepad"></i>
-            </div>
-            <h1>GAMING <span class="neon-text">ZONE</span></h1>
-            <p class="login-subtitle">نظام إدارة الصالة</p>
-        </div>
-        
-        <form id="loginForm" class="login-form">
-            <div class="input-group">
-                <i class="fas fa-user"></i>
-                <select id="loginRole" required>
-                    <option value="">اختر الحساب</option>
-                    <option value="owner">👑 المالك</option>
-                    <option value="morning">🌅 عامل الصباح</option>
-                    <option value="evening">🌙 عامل المساء</option>
-                </select>
-            </div>
-            
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" id="loginPassword" placeholder="كلمة المرور" required>
-            </div>
-            
-            <button type="submit" class="btn-login">
-                <span>دخول</span>
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            
-            <div class="login-hint">
-                <small>🔑 المالك: owner123 | الصباح: morning123 | المساء: evening123</small>
-            </div>
-        </form>
-    </div>
+    // تحميل كلمات المرور المخصصة أو الافتراضية
+    let passwords = {
+        owner: 'owner123',
+        morning: 'morning123',
+        evening: 'evening123'
+    };
+    try {
+        const settings = JSON.parse(localStorage.getItem('gzSettings') || '{}');
+        if (settings.ownerPass) passwords.owner = settings.ownerPass;
+        if (settings.morningPass) passwords.morning = settings.morningPass;
+        if (settings.eveningPass) passwords.evening = settings.eveningPass;
+    } catch(e) {}
 
-    <script src="/js/app.js"></script>
-    <script>
-        // تأثير الجزيئات المتطايرة
-        const particlesContainer = document.getElementById('particles');
-        for(let i = 0; i < 40; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.top = Math.random() * 100 + '%';
-            particle.style.animationDelay = Math.random() * 4 + 's';
-            particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            particlesContainer.appendChild(particle);
-        }
-
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const role = document.getElementById('loginRole').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            const passwords = {
-                owner: 'owner123',
-                morning: 'morning123',
-                evening: 'evening123'
-            };
-
-            if(passwords[role] && passwords[role] === password) {
-                localStorage.setItem('currentUser', role);
-                localStorage.setItem('loginTime', new Date().toISOString());
-                window.location.href = '/dashboard.html';
-            } else {
-                alert('كلمة المرور غير صحيحة!');
-            }
-        });
-    </script>
+    if (passwords[role] && passwords[role] === password) {
+        localStorage.setItem('currentUser', role);
+        localStorage.setItem('loginTime', new Date().toISOString());
+        window.location.href = '/dashboard.html';
+    } else {
+        alert('كلمة المرور غير صحيحة!');
+    }
+});
+</script>
 </body>
 </html>

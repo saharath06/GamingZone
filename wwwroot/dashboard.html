@@ -91,13 +91,17 @@
 <form id="addProductForm" class="product-form">
 <div class="form-row">
 <div class="form-group"><label>الاسم</label><input type="text" id="prodName" required placeholder="قهوة"></div>
-<div class="form-group"><label>الأيقونة</label><input type="text" id="prodEmoji" placeholder="☕" maxlength="4"></div>
 <div class="form-group"><label>الفئة</label><select id="prodCategory" required><option value="coffee">☕ ساخنة</option><option value="drinks">🥤 باردة</option><option value="chips">🍿 مقرمشات</option><option value="cake">🍰 حلويات</option><option value="food">🍔 وجبات</option><option value="other">📦 أخرى</option></select></div>
 <div class="form-group"><label>السعر (دج)</label><input type="number" id="prodPrice" required placeholder="100"></div>
 <div class="form-group"><label>الكمية</label><input type="number" id="prodStock" required placeholder="20"></div>
 <div class="form-group"><label>حد التنبيه</label><input type="number" id="prodMinStock" value="5"></div>
 </div>
-<button type="submit" class="btn-neon"><i class="fas fa-plus"></i> حفظ</button>
+<div class="form-group" style="margin-bottom:12px">
+<label>🎨 اختر الأيقونة:</label>
+<div class="emoji-picker" id="emojiPickerAdd"></div>
+<input type="hidden" id="prodEmoji" value="☕">
+</div>
+<button type="submit" class="btn-neon"><i class="fas fa-plus"></i> حفظ السلعة</button>
 </form>
 </div>
 <div class="card mt-15">
@@ -134,17 +138,71 @@
 
 <section class="content-section owner-only" id="section-settings">
 <h2 class="section-title"><i class="fas fa-cog"></i> الإعدادات</h2>
+
 <div class="card">
+<div class="card-header"><h3><i class="fas fa-users"></i> إدارة العمال</h3></div>
+<div style="padding:16px">
+<div class="form-row">
+<div class="form-group">
+<label>🌅 اسم عامل الصباح</label>
+<input type="text" id="morningWorkerName" placeholder="اسم العامل">
+</div>
+<div class="form-group">
+<label>🔒 كلمة مرور عامل الصباح</label>
+<input type="text" id="morningWorkerPass" placeholder="كلمة المرور">
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label>🌙 اسم عامل المساء</label>
+<input type="text" id="eveningWorkerName" placeholder="اسم العامل">
+</div>
+<div class="form-group">
+<label>🔒 كلمة مرور عامل المساء</label>
+<input type="text" id="eveningWorkerPass" placeholder="كلمة المرور">
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label>👑 اسم المالك</label>
+<input type="text" id="ownerName" placeholder="اسم المالك">
+</div>
+<div class="form-group">
+<label>🔒 كلمة مرور المالك</label>
+<input type="text" id="ownerPass" placeholder="كلمة المرور">
+</div>
+</div>
+<button class="btn-neon" onclick="saveWorkersSettings()"><i class="fas fa-save"></i> حفظ الإعدادات</button>
+</div>
+</div>
+
+<div class="card mt-15">
+<div class="card-header"><h3><i class="fas fa-money-bill"></i> إعدادات الأسعار</h3></div>
+<div style="padding:16px">
+<div class="form-row">
+<div class="form-group">
+<label>سعر ساعة الكمبيوتر (دج)</label>
+<input type="number" id="pcPriceInput" placeholder="50">
+</div>
+<div class="form-group">
+<label>سعر نصف ساعة الكونسول (دج)</label>
+<input type="number" id="consolePriceInput" placeholder="100">
+</div>
+</div>
+<button class="btn-neon" onclick="savePrices()"><i class="fas fa-save"></i> حفظ الأسعار</button>
+</div>
+</div>
+
+<div class="card mt-15">
 <div class="card-header"><h3><i class="fas fa-database"></i> البيانات</h3></div>
 <div style="padding:16px;display:flex;gap:8px;flex-wrap:wrap">
-<button class="btn-neon" onclick="exportData()"><i class="fas fa-download"></i> تصدير</button>
-<button class="btn-sm btn-clear" style="padding:9px 14px" onclick="clearAllData()"><i class="fas fa-trash"></i> تصفير</button>
+<button class="btn-neon" onclick="exportData()"><i class="fas fa-download"></i> تصدير نسخة احتياطية</button>
+<button class="btn-sm btn-clear" style="padding:9px 14px" onclick="clearAllData()"><i class="fas fa-trash"></i> تصفير كل البيانات</button>
 </div>
 </div>
 </section>
 </main>
 
-<!-- Modal إضافة سلع -->
 <div class="modal-overlay" id="sessionModal">
 <div class="modal">
 <div class="modal-header"><h3 id="modalTitle">إضافة سلع</h3><button class="modal-close" onclick="closeM('sessionModal')">&times;</button></div>
@@ -157,7 +215,6 @@
 </div>
 </div>
 
-<!-- Modal حساب زبون -->
 <div class="modal-overlay" id="checkoutModal">
 <div class="modal">
 <div class="modal-header"><h3>💰 تسوية حساب زبون</h3><button class="modal-close" onclick="closeM('checkoutModal')">&times;</button></div>
@@ -169,22 +226,23 @@
 </div>
 </div>
 
-<!-- Modal تعديل سلعة -->
 <div class="modal-overlay" id="editProductModal">
 <div class="modal">
 <div class="modal-header"><h3>✏️ تعديل السلعة</h3><button class="modal-close" onclick="closeM('editProductModal')">&times;</button></div>
 <div class="modal-body">
 <div class="form-row">
 <div class="form-group"><label>الاسم</label><input type="text" id="editName"></div>
-<div class="form-group"><label>الأيقونة</label><input type="text" id="editEmoji" maxlength="4"></div>
-</div>
-<div class="form-row">
 <div class="form-group"><label>الفئة</label><select id="editCategory"><option value="coffee">☕ ساخنة</option><option value="drinks">🥤 باردة</option><option value="chips">🍿 مقرمشات</option><option value="cake">🍰 حلويات</option><option value="food">🍔 وجبات</option><option value="other">📦 أخرى</option></select></div>
-<div class="form-group"><label>السعر (دج)</label><input type="number" id="editPrice"></div>
 </div>
 <div class="form-row">
+<div class="form-group"><label>السعر (دج)</label><input type="number" id="editPrice"></div>
 <div class="form-group"><label>الكمية</label><input type="number" id="editStock"></div>
 <div class="form-group"><label>حد التنبيه</label><input type="number" id="editMinStock"></div>
+</div>
+<div class="form-group">
+<label>🎨 اختر الأيقونة:</label>
+<div class="emoji-picker" id="emojiPickerEdit"></div>
+<input type="hidden" id="editEmoji">
 </div>
 <input type="hidden" id="editProdId">
 </div>
@@ -195,7 +253,6 @@
 </div>
 </div>
 
-<!-- الفاتورة (المحاسبة بين العامل والمالك) -->
 <div class="print-invoice" id="printInvoice"></div>
 
 <script src="/js/app.js"></script>
