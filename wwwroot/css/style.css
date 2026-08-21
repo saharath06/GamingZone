@@ -201,3 +201,72 @@ body.role-morning .owner-only,body.role-evening .owner-only{display:none!importa
     .quicksale-layout{grid-template-columns:1fr}.stats-grid{grid-template-columns:repeat(2,1fr)}
     .charts-grid{grid-template-columns:1fr}
 }
+
+/* ===== SYNC INDICATOR ===== */
+.sync-indicator{position:fixed;bottom:15px;left:15px;background:var(--bg-card);border:1px solid var(--neon-green);border-radius:20px;padding:6px 12px;font-size:11px;color:var(--neon-green);z-index:300;display:flex;align-items:center;gap:6px;box-shadow:0 0 15px rgba(0,255,136,0.2)}
+.sync-indicator.syncing{border-color:var(--neon-yellow);color:var(--neon-yellow);box-shadow:0 0 15px rgba(255,221,0,0.2)}
+.sync-indicator.offline{border-color:var(--neon-red);color:var(--neon-red);box-shadow:0 0 15px rgba(255,51,102,0.2)}
+.sync-indicator i{font-size:12px}
+.sync-indicator.syncing i{animation:spin 1s linear infinite}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+/* ===== PC MODE BUTTONS ===== */
+.pc-mode-btn{display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg-input);border:2px solid var(--border-color);border-radius:10px;color:#fff;font-family:'Tajawal',sans-serif;cursor:pointer;transition:.3s;text-align:right}
+.pc-mode-btn:hover{border-color:var(--neon-blue);transform:translateY(-2px);box-shadow:0 4px 15px var(--neon-blue-glow)}
+.pc-mode-btn.timed:hover{border-color:var(--neon-green);box-shadow:0 4px 15px rgba(0,255,136,0.2)}
+.mode-divider{text-align:center;color:var(--text-secondary);font-size:11px;margin:8px 0;position:relative}
+.mode-divider::before,.mode-divider::after{content:'';position:absolute;top:50%;width:30%;height:1px;background:var(--border-color)}
+.mode-divider::before{right:0}.mode-divider::after{left:0}
+
+/* ===== MOBILE RESPONSIVE (IMPORTANT) ===== */
+@media(max-width:900px){
+    :root{--sidebar-w:220px}
+}
+@media(max-width:768px){
+    .sidebar{right:calc(-1*var(--sidebar-w));width:260px;box-shadow:-5px 0 25px rgba(0,0,0,0.5)}
+    .sidebar.open{right:0}
+    .main-content{margin-right:0!important}
+    .menu-toggle{display:block!important;background:var(--bg-card);padding:8px 12px;border-radius:8px}
+    .topbar{padding:0 12px;flex-wrap:wrap;height:auto;min-height:var(--topbar-h);gap:8px;padding-top:8px;padding-bottom:8px}
+    .topbar-right,.topbar-left{gap:8px;flex-wrap:wrap}
+    .live-clock{font-size:13px}
+    .shift-badge{font-size:10px;padding:2px 8px}
+    .daily-total{font-size:11px}
+    .daily-total strong{font-size:14px}
+    .btn-end-shift{padding:5px 10px;font-size:10px}
+    .content-section{padding:12px}
+    .section-title{font-size:16px;margin-bottom:12px}
+    .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+    .stat-card{padding:12px;gap:10px}
+    .stat-icon{width:35px;height:35px;font-size:14px}
+    .stat-info h3{font-size:16px}
+    .stat-info p{font-size:11px}
+    .pc-grid,.consoles-grid{grid-template-columns:1fr;gap:10px}
+    .quicksale-layout{grid-template-columns:1fr}
+    .charts-grid{grid-template-columns:1fr}
+    .form-row{grid-template-columns:1fr}
+    .data-table{font-size:11px}
+    .data-table th,.data-table td{padding:6px 8px}
+    .modal{max-width:95%;max-height:92vh}
+    .sync-indicator{bottom:10px;left:10px;font-size:10px;padding:4px 8px}
+    .pc-timer-display{font-size:24px}
+    .timer-display{font-size:28px}
+    .products-grid{grid-template-columns:repeat(3,1fr);max-height:250px}
+    .product-item{padding:8px 5px}
+    .product-name{font-size:11px}
+    .product-price{font-size:11px}
+    .sidebar-header h2{font-size:14px}
+    .nav-item{font-size:12px;padding:9px 12px}
+    .card-header{padding:12px 14px}
+    .card-header h3{font-size:13px}
+    .btn-neon{padding:8px 14px;font-size:12px}
+    .btn-sm{padding:5px 8px;font-size:10px}
+    .pc-card-actions{gap:4px}
+}
+
+@media(max-width:400px){
+    .stats-grid{grid-template-columns:1fr}
+    .products-grid{grid-template-columns:repeat(2,1fr)}
+    .topbar{gap:5px}
+    .live-clock{font-size:11px}
+}

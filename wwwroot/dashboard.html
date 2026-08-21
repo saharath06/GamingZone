@@ -10,6 +10,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="dashboard-page">
+<div id="syncIndicator" class="sync-indicator">
+<i class="fas fa-cloud"></i> <span id="syncText">متصل بالسحابة</span>
+</div>
+
 <aside class="sidebar" id="sidebar">
 <div class="sidebar-header"><div class="logo-small"><i class="fas fa-gamepad"></i></div><h2>GAMING <span class="neon-text">ZONE</span></h2></div>
 <div class="user-info"><div class="user-avatar" id="userAvatar">👑</div><span id="userName">المالك</span><small id="userShift">كامل الصلاحيات</small></div>
@@ -58,12 +62,12 @@
 </section>
 
 <section class="content-section" id="section-sessions">
-<h2 class="section-title"><i class="fas fa-desktop"></i> أجهزة الكمبيوتر (50 دج/ساعة نسبية)</h2>
+<h2 class="section-title"><i class="fas fa-desktop"></i> أجهزة الكمبيوتر</h2>
 <div class="pc-grid" id="pcGrid"></div>
 </section>
 
 <section class="content-section" id="section-consoles">
-<h2 class="section-title"><i class="fas fa-gamepad"></i> الكونسولات (100 دج/نصف ساعة)</h2>
+<h2 class="section-title"><i class="fas fa-gamepad"></i> الكونسولات</h2>
 <div class="consoles-grid" id="consolesGrid"></div>
 </section>
 
@@ -85,23 +89,23 @@
 </section>
 
 <section class="content-section owner-only" id="section-products">
-<h2 class="section-title"><i class="fas fa-boxes-stacked"></i> إدارة السلع (المالك فقط)</h2>
+<h2 class="section-title"><i class="fas fa-boxes-stacked"></i> إدارة السلع</h2>
 <div class="card">
 <div class="card-header"><h3><i class="fas fa-plus"></i> إضافة سلعة جديدة</h3></div>
 <form id="addProductForm" class="product-form">
 <div class="form-row">
-<div class="form-group"><label>اسم السلعة</label><input type="text" id="prodName" required placeholder="مثال: قهوة"></div>
-<div class="form-group"><label>الفئة</label><select id="prodCategory" required><option value="coffee">☕ ساخنة</option><option value="drinks">🥤 باردة</option><option value="chips">🍿 مقرمشات</option><option value="cake">🍰 حلويات</option><option value="food">🍔 وجبات</option><option value="other">📦 أخرى</option></select></div>
-<div class="form-group"><label>سعر البيع (دج)</label><input type="number" id="prodPrice" required placeholder="100"></div>
-<div class="form-group"><label>الكمية بالمخزن</label><input type="number" id="prodStock" required placeholder="20"></div>
+<div class="form-group"><label>اسم السلعة</label><input type="text" id="prodName" required placeholder="قهوة"></div>
+<div class="form-group"><label>الفئة</label><select id="prodCategory" required><option value="coffee">ساخنة</option><option value="drinks">باردة</option><option value="chips">مقرمشات</option><option value="cake">حلويات</option><option value="food">وجبات</option><option value="other">أخرى</option></select></div>
+<div class="form-group"><label>السعر (دج)</label><input type="number" id="prodPrice" required placeholder="100"></div>
+<div class="form-group"><label>الكمية</label><input type="number" id="prodStock" required placeholder="20"></div>
 <div class="form-group"><label>حد التنبيه</label><input type="number" id="prodMinStock" value="5"></div>
 </div>
-<button type="submit" class="btn-neon"><i class="fas fa-plus"></i> حفظ السلعة</button>
+<button type="submit" class="btn-neon"><i class="fas fa-plus"></i> حفظ</button>
 </form>
 </div>
 <div class="card mt-15">
 <div class="card-header"><h3><i class="fas fa-list"></i> المخزون</h3></div>
-<div class="table-responsive"><table class="data-table"><thead><tr><th>اسم السلعة</th><th>الفئة</th><th>السعر</th><th>الكمية</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="productsTableBody"></tbody></table></div>
+<div class="table-responsive"><table class="data-table"><thead><tr><th>الاسم</th><th>الفئة</th><th>السعر</th><th>الكمية</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="productsTableBody"></tbody></table></div>
 </div>
 </section>
 
@@ -109,7 +113,7 @@
 <h2 class="section-title"><i class="fas fa-chart-line"></i> الإحصائيات</h2>
 <div class="charts-grid">
 <div class="card"><div class="card-header"><h3><i class="fas fa-chart-pie"></i> توزيع المداخيل</h3></div><div class="chart-container"><canvas id="revenuePieChart"></canvas></div></div>
-<div class="card"><div class="card-header"><h3><i class="fas fa-chart-bar"></i> المداخيل حسب النوع</h3></div><div class="chart-container"><canvas id="revenueBarChart"></canvas></div></div>
+<div class="card"><div class="card-header"><h3><i class="fas fa-chart-bar"></i> المداخيل</h3></div><div class="chart-container"><canvas id="revenueBarChart"></canvas></div></div>
 </div>
 </section>
 
@@ -117,16 +121,16 @@
 <h2 class="section-title"><i class="fas fa-chart-bar"></i> التقارير المالية</h2>
 <div class="stats-grid">
 <div class="stat-card"><div class="stat-icon green"><i class="fas fa-coins"></i></div><div class="stat-info"><h3 id="reportTotal">0 دج</h3><p>إجمالي اليوم</p></div></div>
-<div class="stat-card"><div class="stat-icon blue"><i class="fas fa-desktop"></i></div><div class="stat-info"><h3 id="reportPC">0 دج</h3><p>مداخيل PC</p></div></div>
-<div class="stat-card"><div class="stat-icon purple"><i class="fas fa-gamepad"></i></div><div class="stat-info"><h3 id="reportConsole">0 دج</h3><p>مداخيل الكونسول</p></div></div>
-<div class="stat-card"><div class="stat-icon orange"><i class="fas fa-shopping-cart"></i></div><div class="stat-info"><h3 id="reportProducts">0 دج</h3><p>مداخيل السلع</p></div></div>
+<div class="stat-card"><div class="stat-icon blue"><i class="fas fa-desktop"></i></div><div class="stat-info"><h3 id="reportPC">0 دج</h3><p>PC</p></div></div>
+<div class="stat-card"><div class="stat-icon purple"><i class="fas fa-gamepad"></i></div><div class="stat-info"><h3 id="reportConsole">0 دج</h3><p>كونسول</p></div></div>
+<div class="stat-card"><div class="stat-icon orange"><i class="fas fa-shopping-cart"></i></div><div class="stat-info"><h3 id="reportProducts">0 دج</h3><p>سلع</p></div></div>
 </div>
 <div class="stats-grid mt-15">
-<div class="stat-card"><div class="stat-icon yellow"><i class="fas fa-sun"></i></div><div class="stat-info"><h3 id="reportMorning">0 دج</h3><p>وردية الصباح</p></div></div>
-<div class="stat-card"><div class="stat-icon purple"><i class="fas fa-moon"></i></div><div class="stat-info"><h3 id="reportEvening">0 دج</h3><p>وردية المساء</p></div></div>
+<div class="stat-card"><div class="stat-icon yellow"><i class="fas fa-sun"></i></div><div class="stat-info"><h3 id="reportMorning">0 دج</h3><p>الصباح</p></div></div>
+<div class="stat-card"><div class="stat-icon purple"><i class="fas fa-moon"></i></div><div class="stat-info"><h3 id="reportEvening">0 دج</h3><p>المساء</p></div></div>
 </div>
 <div class="card mt-15">
-<div class="card-header"><h3><i class="fas fa-history"></i> سجل العمليات اليوم</h3></div>
+<div class="card-header"><h3><i class="fas fa-history"></i> سجل العمليات</h3></div>
 <div class="table-responsive"><table class="data-table"><thead><tr><th>الوقت</th><th>النوع</th><th>التفاصيل</th><th>المبلغ</th><th>الوردية</th></tr></thead><tbody id="transactionLog"></tbody></table></div>
 </div>
 </section>
@@ -135,68 +139,123 @@
 <h2 class="section-title"><i class="fas fa-cog"></i> الإعدادات</h2>
 
 <div class="card">
-<div class="card-header"><h3><i class="fas fa-users"></i> إدارة العمال</h3></div>
+<div class="card-header"><h3><i class="fas fa-cloud"></i> إعدادات المزامنة السحابية</h3></div>
 <div style="padding:16px">
+<p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px">⚠️ املأ هذه الحقول لتفعيل المزامنة بين جميع الأجهزة (كمبيوتر + هاتف)</p>
 <div class="form-row">
 <div class="form-group">
-<label>🌅 اسم عامل الصباح</label>
-<input type="text" id="morningWorkerName" placeholder="اسم العامل">
+<label>Bin ID</label>
+<input type="text" id="cloudBinId" placeholder="رقم الصندوق من jsonbin.io">
 </div>
 <div class="form-group">
-<label>🔒 كلمة مرور عامل الصباح</label>
-<input type="text" id="morningWorkerPass" placeholder="كلمة المرور">
+<label>X-Master-Key</label>
+<input type="text" id="cloudApiKey" placeholder="مفتاح API الخاص بك">
 </div>
 </div>
-<div class="form-row">
-<div class="form-group">
-<label>🌙 اسم عامل المساء</label>
-<input type="text" id="eveningWorkerName" placeholder="اسم العامل">
-</div>
-<div class="form-group">
-<label>🔒 كلمة مرور عامل المساء</label>
-<input type="text" id="eveningWorkerPass" placeholder="كلمة المرور">
-</div>
-</div>
-<div class="form-row">
-<div class="form-group">
-<label>👑 اسم المالك</label>
-<input type="text" id="ownerName" placeholder="اسم المالك">
-</div>
-<div class="form-group">
-<label>🔒 كلمة مرور المالك</label>
-<input type="text" id="ownerPass" placeholder="كلمة المرور">
-</div>
-</div>
-<button class="btn-neon" onclick="saveWorkersSettings()"><i class="fas fa-save"></i> حفظ الإعدادات</button>
+<button class="btn-neon" onclick="saveCloudSettings()"><i class="fas fa-cloud-upload-alt"></i> حفظ وتفعيل المزامنة</button>
+<button class="btn-secondary" style="margin-right:8px" onclick="testCloud()"><i class="fas fa-vial"></i> اختبار الاتصال</button>
 </div>
 </div>
 
 <div class="card mt-15">
-<div class="card-header"><h3><i class="fas fa-money-bill"></i> إعدادات الأسعار</h3></div>
+<div class="card-header"><h3><i class="fas fa-users"></i> إدارة العمال</h3></div>
 <div style="padding:16px">
 <div class="form-row">
-<div class="form-group">
-<label>سعر ساعة الكمبيوتر (دج)</label>
-<input type="number" id="pcPriceInput" placeholder="50">
+<div class="form-group"><label>🌅 اسم عامل الصباح</label><input type="text" id="morningWorkerName"></div>
+<div class="form-group"><label>🔒 كلمة مروره</label><input type="text" id="morningWorkerPass"></div>
 </div>
-<div class="form-group">
-<label>سعر نصف ساعة الكونسول (دج)</label>
-<input type="number" id="consolePriceInput" placeholder="100">
+<div class="form-row">
+<div class="form-group"><label>🌙 اسم عامل المساء</label><input type="text" id="eveningWorkerName"></div>
+<div class="form-group"><label>🔒 كلمة مروره</label><input type="text" id="eveningWorkerPass"></div>
+</div>
+<div class="form-row">
+<div class="form-group"><label>👑 اسم المالك</label><input type="text" id="ownerName"></div>
+<div class="form-group"><label>🔒 كلمة مروره</label><input type="text" id="ownerPass"></div>
+</div>
+<button class="btn-neon" onclick="saveWorkersSettings()"><i class="fas fa-save"></i> حفظ</button>
 </div>
 </div>
-<button class="btn-neon" onclick="savePrices()"><i class="fas fa-save"></i> حفظ الأسعار</button>
+
+<div class="card mt-15">
+<div class="card-header"><h3><i class="fas fa-money-bill"></i> الأسعار</h3></div>
+<div style="padding:16px">
+<div class="form-row">
+<div class="form-group"><label>سعر ساعة PC (دج)</label><input type="number" id="pcPriceInput" placeholder="50"></div>
+<div class="form-group"><label>سعر نصف ساعة كونسول (دج)</label><input type="number" id="consolePriceInput" placeholder="100"></div>
+</div>
+<button class="btn-neon" onclick="savePrices()"><i class="fas fa-save"></i> حفظ</button>
 </div>
 </div>
 
 <div class="card mt-15">
 <div class="card-header"><h3><i class="fas fa-database"></i> البيانات</h3></div>
 <div style="padding:16px;display:flex;gap:8px;flex-wrap:wrap">
-<button class="btn-neon" onclick="exportData()"><i class="fas fa-download"></i> تصدير نسخة احتياطية</button>
-<button class="btn-sm btn-clear" style="padding:9px 14px" onclick="clearAllData()"><i class="fas fa-trash"></i> تصفير كل البيانات</button>
+<button class="btn-neon" onclick="exportData()"><i class="fas fa-download"></i> تصدير</button>
+<button class="btn-sm btn-clear" style="padding:9px 14px" onclick="clearAllData()"><i class="fas fa-trash"></i> تصفير</button>
 </div>
 </div>
 </section>
 </main>
+
+<!-- Modal: فتح PC -->
+<div class="modal-overlay" id="pcOpenModal">
+<div class="modal">
+<div class="modal-header"><h3 id="pcOpenTitle">فتح جهاز PC</h3><button class="modal-close" onclick="closeM('pcOpenModal')">&times;</button></div>
+<div class="modal-body">
+<div class="modal-device-info">اختر نوع الجلسة:</div>
+<div style="display:grid;grid-template-columns:1fr;gap:10px">
+
+<button class="pc-mode-btn" onclick="startPCOpen()">
+<i class="fas fa-infinity" style="color:var(--neon-blue);font-size:20px"></i>
+<div>
+<div style="font-weight:800;font-size:14px">وقت مفتوح</div>
+<div style="font-size:11px;color:var(--text-secondary)">يحسب من البداية حتى الحساب</div>
+</div>
+</button>
+
+<div class="mode-divider">أو اختر وقتاً محدداً (يُسجَّل الحساب فوراً)</div>
+
+<button class="pc-mode-btn timed" onclick="startPCTimed(30)">
+<i class="fas fa-clock" style="color:var(--neon-green);font-size:20px"></i>
+<div>
+<div style="font-weight:800;font-size:14px">30 دقيقة</div>
+<div style="font-size:11px;color:var(--neon-green)" id="price30">25 دج</div>
+</div>
+</button>
+
+<button class="pc-mode-btn timed" onclick="startPCTimed(60)">
+<i class="fas fa-clock" style="color:var(--neon-green);font-size:20px"></i>
+<div>
+<div style="font-weight:800;font-size:14px">1 ساعة</div>
+<div style="font-size:11px;color:var(--neon-green)" id="price60">50 دج</div>
+</div>
+</button>
+
+<button class="pc-mode-btn timed" onclick="startPCTimed(120)">
+<i class="fas fa-clock" style="color:var(--neon-green);font-size:20px"></i>
+<div>
+<div style="font-weight:800;font-size:14px">2 ساعة</div>
+<div style="font-size:11px;color:var(--neon-green)" id="price120">100 دج</div>
+</div>
+</button>
+
+<button class="pc-mode-btn timed" onclick="startPCTimed(180)">
+<i class="fas fa-clock" style="color:var(--neon-green);font-size:20px"></i>
+<div>
+<div style="font-weight:800;font-size:14px">3 ساعات</div>
+<div style="font-size:11px;color:var(--neon-green)" id="price180">150 دج</div>
+</div>
+</button>
+
+<div style="display:flex;gap:8px;margin-top:5px">
+<input type="number" id="customMinutes" placeholder="أدخل دقائق مخصصة" style="flex:1;padding:10px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:8px;color:#fff;font-family:'Tajawal',sans-serif">
+<button class="btn-neon" onclick="startPCCustom()"><i class="fas fa-check"></i> فتح</button>
+</div>
+
+</div>
+</div>
+</div>
+</div>
 
 <div class="modal-overlay" id="sessionModal">
 <div class="modal">
@@ -212,10 +271,10 @@
 
 <div class="modal-overlay" id="checkoutModal">
 <div class="modal">
-<div class="modal-header"><h3>💰 تسوية حساب زبون</h3><button class="modal-close" onclick="closeM('checkoutModal')">&times;</button></div>
+<div class="modal-header"><h3>💰 تسوية حساب</h3><button class="modal-close" onclick="closeM('checkoutModal')">&times;</button></div>
 <div class="modal-body"><div id="checkoutSummary"></div></div>
 <div class="modal-footer">
-<button class="btn-neon" onclick="confirmChk()"><i class="fas fa-check"></i> تأكيد الدفع</button>
+<button class="btn-neon" onclick="confirmChk()"><i class="fas fa-check"></i> تأكيد</button>
 <button class="btn-secondary" onclick="closeM('checkoutModal')">إلغاء</button>
 </div>
 </div>
@@ -227,17 +286,17 @@
 <div class="modal-body">
 <div class="form-row">
 <div class="form-group"><label>الاسم</label><input type="text" id="editName"></div>
-<div class="form-group"><label>الفئة</label><select id="editCategory"><option value="coffee">☕ ساخنة</option><option value="drinks">🥤 باردة</option><option value="chips">🍿 مقرمشات</option><option value="cake">🍰 حلويات</option><option value="food">🍔 وجبات</option><option value="other">📦 أخرى</option></select></div>
+<div class="form-group"><label>الفئة</label><select id="editCategory"><option value="coffee">ساخنة</option><option value="drinks">باردة</option><option value="chips">مقرمشات</option><option value="cake">حلويات</option><option value="food">وجبات</option><option value="other">أخرى</option></select></div>
 </div>
 <div class="form-row">
 <div class="form-group"><label>السعر (دج)</label><input type="number" id="editPrice"></div>
-<div class="form-group"><label>الكمية بالمخزن</label><input type="number" id="editStock"></div>
+<div class="form-group"><label>الكمية</label><input type="number" id="editStock"></div>
 <div class="form-group"><label>حد التنبيه</label><input type="number" id="editMinStock"></div>
 </div>
 <input type="hidden" id="editProdId">
 </div>
 <div class="modal-footer">
-<button class="btn-neon" onclick="saveEditProd()"><i class="fas fa-save"></i> حفظ التعديل</button>
+<button class="btn-neon" onclick="saveEditProd()"><i class="fas fa-save"></i> حفظ</button>
 <button class="btn-secondary" onclick="closeM('editProductModal')">إلغاء</button>
 </div>
 </div>
